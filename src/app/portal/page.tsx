@@ -8,7 +8,7 @@ import { STATUS_LABELS, TIER_CONFIG } from '@/lib/constants';
 import DefectModal from '@/components/consignor/DefectModal';
 import PayoutReceiptModal from '@/components/consignor/PayoutReceiptModal';
 import BankDetailsModal from '@/components/consignor/BankDetailsModal';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Truck, CheckCircle2, Clock, Sparkles, Package, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ConsignorPortalPage() {
@@ -21,6 +21,8 @@ export default function ConsignorPortalPage() {
 
   const userItems = data.items.filter((i) => i.consignor_id === activeUser.id);
   const userPayouts = data.payouts.filter((p) => p.consignor_id === activeUser.id);
+  const userBatches = data.batches.filter((b) => b.consignor_id === activeUser.id);
+  const activeBatches = userBatches.filter((b) => b.status !== 'completed');
 
   const totalItems = userItems.length;
   const inSteamItems = userItems.filter((i) => i.status === 'in_steam').length;
@@ -93,6 +95,93 @@ export default function ConsignorPortalPage() {
             </Link>
           </div>
         </div>
+
+        {/* Active Intake Batches In Progress */}
+        {activeBatches.length > 0 && (
+          <div className="space-y-3">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-espresso-500 font-semibold block">
+              Status Penjemputan Lemari Terkini
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeBatches.map((batch) => {
+                const statusInfo = {
+                  scheduled: {
+                    label: 'Kurir Dijadwalkan',
+                    desc: 'Kurir internal akan menghubungi Anda via WhatsApp sebelum tiba di lokasi.',
+                    badge: 'bg-amber-100 text-amber-900 border-amber-300',
+                  },
+                  picked_up: {
+                    label: 'Diantar ke Studio',
+                    desc: 'Kantong pakaian telah diambil kurir dan dalam perjalanan ke Studio Jl. Siliwangi No. 102.',
+                    badge: 'bg-blue-100 text-blue-900 border-blue-300',
+                  },
+                  in_qc: {
+                    label: 'Sedang Screening QC & Uap',
+                    desc: 'Pakaian sedang dihitung fisik, diperiksa noda/kancing, dan disterilisasi cuci uap panas >100°C.',
+                    badge: 'bg-purple-100 text-purple-900 border-purple-300',
+                  },
+                  completed: {
+                    label: 'Selesai Kurasi',
+                    desc: 'Seluruh pakaian telah ber-hangtag dan siap masuk siaran live.',
+                    badge: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+                  },
+                }[batch.status] || {
+                  label: batch.status,
+                  desc: '',
+                  badge: 'bg-linen-200 text-espresso-800 border-linen-300',
+                };
+
+                return (
+                  <div
+                    key={batch.id}
+                    className="bg-white rounded-2xl p-6 border border-linen-200 shadow-sm space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-bold text-espresso-900">
+                            {batch.batch_code}
+                          </span>
+                          <span
+                            className={`text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border font-medium ${statusInfo.badge}`}
+                          >
+                            {statusInfo.label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-espresso-600 font-sans">{statusInfo.desc}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-[9px] font-mono text-espresso-400 block uppercase">
+                          Estimasi
+                        </span>
+                        <span className="font-serif text-lg font-medium text-espresso-900">
+                          {batch.actual_count > 0 ? batch.actual_count : batch.estimated_count} pcs
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-linen-200/80 flex items-center justify-between text-[11px] text-espresso-500 font-sans">
+                      <div className="truncate max-w-[260px]">
+                        📍 {batch.pickup_address}
+                      </div>
+                      <a
+                        href={`https://wa.me/6281288997711?text=${encodeURIComponent(
+                          `Halo Kurir PindahTangan Sukabumi, saya ingin konfirmasi status penjemputan untuk Batch ${batch.batch_code}.`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-terracotta-600 hover:text-espresso-900 font-medium font-sans flex items-center gap-1 shrink-0 ml-2"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>Chat Kurir</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* 4 Quiet High-End Metric Columns */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">

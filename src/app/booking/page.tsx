@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useStore } from '@/lib/useStore';
 import { SUKABUMI_DISTRICTS, BUSINESS_RULES } from '@/lib/constants';
 import Link from 'next/link';
-import { ArrowUpRight, Check } from 'lucide-react';
+import { ArrowUpRight, Check, MessageCircle } from 'lucide-react';
 
 function BookingFormContent() {
   const router = useRouter();
@@ -274,18 +274,31 @@ function BookingFormContent() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+              <a
+                href={`https://wa.me/6281288997711?text=${encodeURIComponent(
+                  `Halo Admin PindahTangan Sukabumi, saya sudah booking penjemputan lemari.\n\n• Nama: ${successBatch.consignorName}\n• Kode Batch: ${successBatch.batchCode}\n• Estimasi Titip: ${successBatch.count} pcs\n• Alamat: ${successBatch.address}\n• Jadwal: ${formData.pickupDate} (${formData.pickupSlot === 'pagi' ? 'Pagi 09.00-12.00' : 'Siang 13.30-16.30'})\n\nMohon konfirmasi kurir internal ya kak. Terima kasih!`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Kirim WA ke Kurir Studio</span>
+              </a>
+
               <Link
                 href="/portal"
-                className="w-full sm:w-auto bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-8 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-6 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center justify-center gap-2"
               >
                 <span>Buka Lemari Saya</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
+
               <button
                 onClick={() => setSuccessBatch(null)}
-                className="w-full sm:w-auto border border-linen-300 text-espresso-700 px-6 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition hover:bg-linen-100"
+                className="w-full sm:w-auto border border-linen-300 text-espresso-700 px-5 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition hover:bg-linen-100"
               >
-                Titip Batch Lain
+                Titip Lagi
               </button>
             </div>
           </div>
