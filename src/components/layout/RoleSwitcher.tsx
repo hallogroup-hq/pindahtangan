@@ -13,29 +13,49 @@ export default function RoleSwitcher() {
       id: 'user-ratna-01',
       name: 'Ibu Ratna Dewi',
       role: 'Consignor',
-      desc: 'Pemilik lemari pakaian penuh di Cikole, Sukabumi',
+      tier: null,
+      desc: 'Pemilik lemari pakaian di Cikole, Sukabumi',
       path: '/portal',
-    },
-    {
-      id: 'user-admin-studio',
-      name: 'Studio Operator',
-      role: 'Studio & QC',
-      desc: 'Petugas QC, cuci uap panas & penomoran hangtag',
-      path: '/studio',
     },
     {
       id: 'user-siti-host',
       name: 'Siti Nurhaliza',
       role: 'Host Live',
-      desc: 'Talent siaran live streaming TikTok/IG di ring-light',
+      tier: null,
+      desc: 'Talent siaran live streaming TikTok/IG di studio',
       path: '/host',
     },
     {
-      id: 'user-superadmin',
-      name: 'Admin Backoffice',
-      role: 'Finance & Ops',
-      desc: 'Eksekusi payout Jumat 16.00 WIB & resi paket',
+      id: 'user-admin-super',
+      name: 'Akmal Irsyad',
+      role: 'Superadmin',
+      tier: 'superadmin' as const,
+      desc: 'Founder / Owner PindahTangan (Akses Penuh)',
       path: '/admin',
+    },
+    {
+      id: 'user-admin-studio',
+      name: 'Kang Asep',
+      role: 'Studio & QC Lead',
+      tier: 'studio_lead' as const,
+      desc: 'Petugas QC 5-parameter, cuci uap & hangtag',
+      path: '/admin/intake',
+    },
+    {
+      id: 'user-admin-logistics',
+      name: 'Budi Santoso',
+      role: 'Logistics',
+      tier: 'logistics' as const,
+      desc: 'Staf packing scanner barcode & dispatch 3PL',
+      path: '/admin/fulfillment',
+    },
+    {
+      id: 'user-admin-finance',
+      name: 'Dewi Kartika',
+      role: 'Finance Admin',
+      tier: 'finance' as const,
+      desc: 'Rekonsiliasi kas & payout transfer bank Jumat',
+      path: '/admin/payouts',
     },
   ];
 
@@ -64,17 +84,14 @@ export default function RoleSwitcher() {
 
           <div className="space-y-1">
             {roles.map((r) => {
-              const isSelected =
-                activeUser?.id === r.id ||
-                (r.id === 'user-superadmin' && activeUser?.role === 'admin');
+              const isSelected = activeUser?.id === r.id;
               return (
                 <button
                   key={r.id}
                   onClick={() => {
-                    if (r.id === 'user-superadmin') {
-                      setActiveUser('user-admin-studio');
-                    } else {
-                      setActiveUser(r.id);
+                    setActiveUser(r.id);
+                    if (r.tier) {
+                      store.setCurrentAdminTier(r.tier);
                     }
                     setIsOpen(false);
                   }}
