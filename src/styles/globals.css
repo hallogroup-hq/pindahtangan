@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FAF7F2;
+  --foreground: #1C1917;
+  --linen-border: #E7E2D8;
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: var(--font-playfair), Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+/* Editorial Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D6CEBF;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C25E43;
+}
+
+/* Custom Minimal Range Slider */
+input[type='range'] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 3px;
+  background: #E7E2D8;
+  border-radius: 9999px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #1C1917;
+  border: 3px solid #FAF7F2;
+  box-shadow: 0 2px 8px rgba(28, 25, 23, 0.25);
+  cursor: grab;
+  margin-top: -8.5px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #C25E43;
+}
+
+input[type='range']::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.25);
+  background: #B04F36;
+}
+
+/* Editorial selection */
+::selection {
+  background-color: #F7D1CB;
+  color: #7B3523;
+}
