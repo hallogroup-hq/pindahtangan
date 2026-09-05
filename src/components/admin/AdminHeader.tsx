@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { AdminTier } from '@/lib/types';
-import { Shield, Sparkles, Truck, CircleDollarSign, CheckCircle2 } from 'lucide-react';
+import { useStore } from '@/lib/useStore';
+import { Shield, Sparkles, Truck, CircleDollarSign, CheckCircle2, Database } from 'lucide-react';
 
 interface AdminHeaderProps {
   activeTier: AdminTier;
@@ -60,6 +61,7 @@ export default function AdminHeader({
   onTierChange,
   activeTabTitle,
 }: AdminHeaderProps) {
+  const { cloudStatus } = useStore();
   const currentDetails = TIER_DETAILS[activeTier];
   const IconComponent = currentDetails.icon;
 
@@ -69,7 +71,7 @@ export default function AdminHeader({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Studio Identity */}
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-mono font-semibold tracking-[0.2em] uppercase bg-espresso-900 text-linen-100 rounded">
                 STUDIO HUB SUKABUMI
               </span>
@@ -77,6 +79,17 @@ export default function AdminHeader({
                 <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
                 Shift Operasional Aktif • Jl. Siliwangi No. 102
               </span>
+              {cloudStatus.isConnected ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono font-medium rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
+                  <Database className="w-2.5 h-2.5 text-emerald-600" />
+                  <span>Cloud Live (Realtime)</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono font-medium rounded-full bg-linen-200/80 text-espresso-600 border border-linen-300" title="Data tersimpan di local storage browser">
+                  <Database className="w-2.5 h-2.5 text-espresso-400" />
+                  <span>Local Cache Mode</span>
+                </span>
+              )}
             </div>
             <div className="flex items-baseline gap-3">
               <h1 className="font-serif text-2xl sm:text-3xl font-medium text-espresso-900 tracking-tight">
