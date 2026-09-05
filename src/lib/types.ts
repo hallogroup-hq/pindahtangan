@@ -5,6 +5,8 @@
 
 export type UserRole = 'consignor' | 'host' | 'admin';
 
+export type AdminTier = 'superadmin' | 'finance' | 'studio_lead' | 'logistics';
+
 export type BatchStatus = 'scheduled' | 'picked_up' | 'in_qc' | 'completed';
 
 export type TierCategory = 'tier_a' | 'tier_b' | 'tier_c';
@@ -39,6 +41,8 @@ export interface Profile {
   bank_account_number?: string;
   bank_account_holder?: string;
   role: UserRole;
+  admin_tier?: AdminTier;
+  is_active_staff?: boolean;
   created_at: string;
 }
 
@@ -83,6 +87,10 @@ export interface ClothesItem {
   defect_photo_url?: string | null;
   defect_notes?: string | null;
   reject_resolution?: RejectAction | null;
+  rack_location?: string;
+  inspected_by?: string;
+  inspection_notes?: string;
+  steam_completed_at?: string;
   consignment_start_date: string;
   aging_expiry_date: string;
   created_at: string;
@@ -117,6 +125,9 @@ export interface Order {
   subtotal_amount: number;
   shipping_fee: number;
   total_paid: number;
+  packed_by?: string;
+  packed_at?: string;
+  dispatched_at?: string;
   created_at: string;
   items?: ClothesItem[];
 }
@@ -157,6 +168,33 @@ export interface LiveSession {
   host_commission_earned: number;
   is_active?: boolean;
   host?: Profile;
+}
+
+// 8. Admin Run-Sheet Item (50 Hangers)
+export interface RunSheetItem {
+  hangerNumber: number;
+  item: ClothesItem;
+  isOnStage?: boolean;
+}
+
+// 9. Fulfillment Barcode Scan Result
+export interface FulfillmentScanResult {
+  matched: boolean;
+  message: string;
+  item?: ClothesItem;
+  order?: Order;
+}
+
+// 10. Host Shift Payroll Summary
+export interface HostShiftSummary {
+  hostId: string;
+  hostName: string;
+  sessionTitle: string;
+  date: string;
+  itemsSold: number;
+  baseFee: number;
+  commissionFee: number;
+  totalEarnings: number;
 }
 
 // Financial Simulation Payload

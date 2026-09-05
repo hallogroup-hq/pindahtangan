@@ -15,6 +15,11 @@ import {
   RejectAction,
   ShippingStatus,
   UnitEconomicsSummary,
+  AdminTier,
+  RunSheetItem,
+  FulfillmentScanResult,
+  HostShiftSummary,
+  TierCategory,
 } from './types';
 import { BUSINESS_RULES } from './constants';
 import {
@@ -22,6 +27,7 @@ import {
   generateSKU,
   generateOrderNumber,
   generatePayoutCode,
+  formatIDR,
 } from './utils';
 
 const STORAGE_KEY = 'pindahtangan_store_v1';
@@ -66,11 +72,46 @@ export const SEED_PROFILES: Profile[] = [
   },
   {
     id: 'user-admin-studio',
-    full_name: 'Studio Operator Sukabumi',
+    full_name: 'Studio & QC Lead (Kang Asep)',
     phone_number: '0811-2233-4455',
     address: 'Studio PindahTangan Hub, Jl. Siliwangi No. 102',
     city: 'Kota Sukabumi',
     role: 'admin',
+    admin_tier: 'studio_lead',
+    is_active_staff: true,
+    created_at: '2026-08-01T08:00:00Z',
+  },
+  {
+    id: 'user-admin-finance',
+    full_name: 'Dewi Kartika (Finance Admin)',
+    phone_number: '0812-3344-5566',
+    address: 'Studio PindahTangan Finance, Jl. Siliwangi No. 102',
+    city: 'Kota Sukabumi',
+    role: 'admin',
+    admin_tier: 'finance',
+    is_active_staff: true,
+    created_at: '2026-08-01T08:00:00Z',
+  },
+  {
+    id: 'user-admin-logistics',
+    full_name: 'Budi Santoso (Logistics & Packer)',
+    phone_number: '0878-1122-3344',
+    address: 'Studio PindahTangan Dispatch Hub, Jl. Siliwangi No. 102',
+    city: 'Kota Sukabumi',
+    role: 'admin',
+    admin_tier: 'logistics',
+    is_active_staff: true,
+    created_at: '2026-08-01T08:00:00Z',
+  },
+  {
+    id: 'user-admin-super',
+    full_name: 'Akmal Irsyad (Owner & Superadmin)',
+    phone_number: '0811-9988-7766',
+    address: 'PindahTangan HQ Sukabumi',
+    city: 'Kota Sukabumi',
+    role: 'admin',
+    admin_tier: 'superadmin',
+    is_active_staff: true,
     created_at: '2026-08-01T08:00:00Z',
   },
 ];
@@ -431,6 +472,9 @@ export interface AppStoreData {
   sessions: LiveSession[];
   logs: ItemStatusLog[];
   activeUserId: string;
+  currentAdminTier: AdminTier;
+  activeLiveRunSheet: Record<string, string[]>;
+  onStageItemId?: string | null;
 }
 
 class PindahTanganStore {
@@ -452,13 +496,25 @@ class PindahTanganStore {
         sessions: SEED_SESSIONS,
         logs: SEED_LOGS,
         activeUserId: 'user-ratna-01',
+        currentAdminTier: 'superadmin',
+        activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
+        onStageItemId: 'item-01',
       };
     }
 
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        return {
+          ...parsed,
+          currentAdminTier: parsed.currentAdminTier || 'superadmin',
+          activeLiveRunSheet: parsed.activeLiveRunSheet || {
+            'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'],
+          },
+          onStageItemId:
+            parsed.onStageItemId !== undefined ? parsed.onStageItemId : 'item-01',
+        };
       }
     } catch {
       // Fallback
@@ -473,6 +529,11 @@ class PindahTanganStore {
       sessions: SEED_SESSIONS,
       logs: SEED_LOGS,
       activeUserId: 'user-ratna-01',
+      currentAdminTier: 'superadmin',
+      activeLiveRunSheet: {
+        'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'],
+      },
+      onStageItemId: 'item-01',
     };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
@@ -514,6 +575,16 @@ class PindahTanganStore {
 
   public setActiveUser(userId: string) {
     this.data.activeUserId = userId;
+    this.save();
+  }
+
+  // RBAC Admin Tier
+  public getCurrentAdminTier(): AdminTier {
+    return this.data.currentAdminTier || 'superadmin';
+  }
+
+  public setCurrentAdminTier(tier: AdminTier) {
+    this.data.currentAdminTier = tier;
     this.save();
   }
 
@@ -571,6 +642,125 @@ class PindahTanganStore {
       batch.actual_count = actualCount;
       batch.status = 'in_qc';
       this.save();
+    }
+  }
+
+  public updateBatchActualCount(batchId: string, actualCount: number, notes?: string) {
+    const batch = this.data.batches.find((b) => b.id === batchId);
+    if (batch) {
+      batch.actual_count = actualCount;
+      if (notes !== undefined) batch.notes = notes;
+      batch.status = 'in_qc';
+      this.save();
+    }
+  }
+
+  public completeBatchIntake(batchId: string) {
+    const batch = this.data.batches.find((b) => b.id === batchId);
+    if (batch) {
+      batch.status = 'completed';
+      this.save();
+    }
+  }
+
+  public confirmSteaming(itemId: string) {
+    const item = this.data.items.find((i) => i.id === itemId);
+    if (item) {
+      item.status = 'ready_for_live';
+      item.steam_completed_at = new Date().toISOString();
+      this.save();
+    }
+  }
+
+  // Enhanced 5-parameter QC Inspection (PRD Section 4.1)
+  public inspectQCItem(params: {
+    batchId: string;
+    consignorId: string;
+    title: string;
+    brand: string;
+    size: string;
+    chestWidthCm?: number;
+    categoryTier: TierCategory;
+    floorPrice: number;
+    targetLivePrice: number;
+    photoUrl?: string;
+    passedQC: boolean;
+    defectReason?: string;
+    defectNotes?: string;
+    defectPhotoUrl?: string;
+    isSteamed?: boolean;
+    rackLocation?: string;
+  }): ClothesItem {
+    const hangtag = this.data.items.length + 1;
+    const consignorIdx = Math.floor(1 + Math.random() * 99);
+    const sku = generateSKU(consignorIdx, hangtag);
+    const nowStr = new Date().toISOString();
+
+    if (params.passedQC) {
+      const newItem: ClothesItem = {
+        id: `item-${Date.now()}`,
+        batch_id: params.batchId,
+        consignor_id: params.consignorId,
+        sku,
+        hangtag_number: hangtag,
+        title: params.title,
+        brand: params.brand,
+        size: params.size,
+        chest_width_cm: params.chestWidthCm,
+        category_tier: params.categoryTier,
+        floor_price: params.floorPrice,
+        target_live_price: params.targetLivePrice,
+        steam_fee: BUSINESS_RULES.STEAM_FEE_PER_PIECE,
+        status: params.isSteamed ? 'ready_for_live' : 'in_steam',
+        rack_location: params.rackLocation || 'RACK-A1',
+        inspected_by: this.data.activeUserId,
+        inspection_notes: 'Lolos QC 5 parameter fisik & higienitas uap panas.',
+        steam_completed_at: params.isSteamed ? nowStr : undefined,
+        photo_url:
+          params.photoUrl ||
+          'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=800&q=80',
+        consignment_start_date: nowStr.split('T')[0],
+        aging_expiry_date: new Date(Date.now() + 30 * 86400000)
+          .toISOString()
+          .split('T')[0],
+        created_at: nowStr,
+      };
+      this.data.items.unshift(newItem);
+      this.save();
+      return newItem;
+    } else {
+      const newItem: ClothesItem = {
+        id: `item-rej-${Date.now()}`,
+        batch_id: params.batchId,
+        consignor_id: params.consignorId,
+        sku,
+        hangtag_number: hangtag,
+        title: params.title,
+        brand: params.brand,
+        size: params.size,
+        category_tier: params.categoryTier,
+        floor_price: params.floorPrice,
+        target_live_price: params.targetLivePrice,
+        steam_fee: BUSINESS_RULES.STEAM_FEE_PER_PIECE,
+        status: 'rejected',
+        rack_location: 'BIN-REJECT',
+        inspected_by: this.data.activeUserId,
+        defect_photo_url:
+          params.defectPhotoUrl ||
+          'https://images.unsplash.com/photo-1584285418504-0052ec77846f?w=800&q=80',
+        defect_notes:
+          params.defectNotes ||
+          `Defek teridentifikasi: ${params.defectReason || 'Kain cacat/noda'}.`,
+        reject_resolution: null,
+        consignment_start_date: nowStr.split('T')[0],
+        aging_expiry_date: new Date(Date.now() + 30 * 86400000)
+          .toISOString()
+          .split('T')[0],
+        created_at: nowStr,
+      };
+      this.data.items.unshift(newItem);
+      this.save();
+      return newItem;
     }
   }
 
@@ -853,6 +1043,237 @@ class PindahTanganStore {
     }
   }
 
+  // Live Run-Sheet & Studio Co-Pilot (PRD Section 4.2)
+  public getRunSheetForSession(sessionId: string): RunSheetItem[] {
+    const orderedIds = this.data.activeLiveRunSheet?.[sessionId] || [];
+    const onStageId = this.data.onStageItemId;
+
+    const result: RunSheetItem[] = [];
+    let hanger = 1;
+
+    orderedIds.forEach((id) => {
+      const item = this.data.items.find((i) => i.id === id);
+      if (item) {
+        result.push({
+          hangerNumber: hanger++,
+          item,
+          isOnStage: item.id === onStageId,
+        });
+      }
+    });
+
+    const remaining = this.data.items.filter(
+      (i) =>
+        (i.status === 'ready_for_live' || i.status === 'in_live_queue') &&
+        !orderedIds.includes(i.id)
+    );
+
+    remaining.forEach((item) => {
+      if (hanger <= 50) {
+        result.push({
+          hangerNumber: hanger++,
+          item,
+          isOnStage: item.id === onStageId,
+        });
+      }
+    });
+
+    return result;
+  }
+
+  public setRunSheetHangerOrder(sessionId: string, orderedItemIds: string[]) {
+    if (!this.data.activeLiveRunSheet) {
+      this.data.activeLiveRunSheet = {};
+    }
+    this.data.activeLiveRunSheet[sessionId] = orderedItemIds;
+    this.save();
+  }
+
+  public setOnStageItem(itemId: string | null) {
+    this.data.onStageItemId = itemId;
+    if (itemId) {
+      const item = this.data.items.find((i) => i.id === itemId);
+      if (item && item.status === 'ready_for_live') {
+        item.status = 'in_live_queue';
+      }
+    }
+    this.save();
+  }
+
+  public getOnStageItem(): ClothesItem | null {
+    if (!this.data.onStageItemId) return null;
+    return this.data.items.find((i) => i.id === this.data.onStageItemId) || null;
+  }
+
+  public coPilotAdjustPrice(itemId: string, newTargetPrice: number) {
+    const item = this.data.items.find((i) => i.id === itemId);
+    if (item) {
+      if (newTargetPrice < item.floor_price) {
+        throw new Error(
+          `Harga tawar tidak boleh di bawah Floor Price (${formatIDR(item.floor_price)})`
+        );
+      }
+      item.target_live_price = newTargetPrice;
+      this.save();
+    }
+  }
+
+  public getHostPayrollSummary(): HostShiftSummary[] {
+    return this.data.sessions.map((session) => {
+      const host = this.data.profiles.find((p) => p.id === session.host_id);
+      const base =
+        session.host_base_fee || BUSINESS_RULES.HOST_BASE_FEE_PER_SHIFT;
+      const comm =
+        session.host_commission_earned ||
+        session.total_items_sold * BUSINESS_RULES.HOST_COMMISSION_PER_PIECE;
+      return {
+        hostId: session.host_id,
+        hostName: host?.full_name || 'Host Sukabumi Talent',
+        sessionTitle: session.session_title,
+        date: session.start_time ? session.start_time.split('T')[0] : '2026-09-05',
+        itemsSold: session.total_items_sold,
+        baseFee: base,
+        commissionFee: comm,
+        totalEarnings: base + comm,
+      };
+    });
+  }
+
+  // Zero-Error Barcode Scanning Station (PRD Section 4.3)
+  public verifyPackingBarcode(
+    orderId: string,
+    scannedSku: string
+  ): FulfillmentScanResult {
+    const order = this.data.orders.find((o) => o.id === orderId);
+    if (!order) {
+      return { matched: false, message: `Order #${orderId} tidak ditemukan.` };
+    }
+
+    const orderItem = this.data.items.find((i) => i.order_id === order.id);
+    if (!orderItem) {
+      return {
+        matched: false,
+        message: 'Item pesanan tidak ditemukan di database.',
+        order,
+      };
+    }
+
+    const cleanScan = scannedSku.trim().toUpperCase();
+    const cleanTargetSku = orderItem.sku.trim().toUpperCase();
+
+    if (cleanScan === cleanTargetSku) {
+      orderItem.status = 'packed';
+      order.shipping_status = 'pending_pack';
+      order.packed_by = this.data.activeUserId;
+      order.packed_at = new Date().toISOString();
+      this.save();
+      return {
+        matched: true,
+        message: `VERIFIKASI SUKSES: SKU ${orderItem.sku} (${orderItem.title}) cocok dengan pesanan ${order.order_number}!`,
+        item: orderItem,
+        order,
+      };
+    } else {
+      return {
+        matched: false,
+        message: `VERIFIKASI GAGAL! Barcode fisik yang di-scan (${cleanScan}) TIDAK SESUAI dengan target pesanan (${cleanTargetSku}). Harap cek ulang nomor gantungan!`,
+        item: orderItem,
+        order,
+      };
+    }
+  }
+
+  public bulkDispatchOrders(
+    orderIds: string[],
+    courierName: string
+  ): { count: number; trackingNumbers: Record<string, string> } {
+    const trackingMap: Record<string, string> = {};
+    let count = 0;
+    const nowStr = new Date().toISOString();
+
+    orderIds.forEach((id) => {
+      const order = this.data.orders.find((o) => o.id === id);
+      if (order && order.shipping_status !== 'shipped') {
+        const randomDigits = Math.floor(1000000000 + Math.random() * 9000000000);
+        const prefix = courierName.toLowerCase().includes('gosend')
+          ? 'GS-SKB-'
+          : courierName.toLowerCase().includes('sicepat')
+          ? '0028'
+          : 'JT';
+        const tracking = `${prefix}${randomDigits}`;
+        order.courier_name = courierName;
+        order.tracking_number = tracking;
+        order.shipping_status = 'shipped';
+        order.dispatched_at = nowStr;
+
+        const item = this.data.items.find((i) => i.order_id === order.id);
+        if (item) {
+          item.status = 'shipped';
+        }
+
+        trackingMap[order.id] = tracking;
+        count++;
+      }
+    });
+
+    this.save();
+    return { count, trackingNumbers: trackingMap };
+  }
+
+  // Bank Disbursement CSV Formats (PRD Section 4.4)
+  public exportBankDisbursementCSV(format: 'bca' | 'mandiri'): string {
+    const payouts = this.data.payouts;
+    if (format === 'bca') {
+      let csv = 'RekeningTujuan,NamaPenerima,Nominal,Keterangan,RefCode\n';
+      payouts.forEach((p) => {
+        const cleanAcc = (p.destination_account_number || '').replace(/[^0-9]/g, '');
+        const name = `"${p.destination_account_holder.replace(/"/g, '""')}"`;
+        const amount = p.total_net_payout;
+        const note = `"Gajian PindahTangan ${p.payout_code}"`;
+        csv += `${cleanAcc},${name},${amount},${note},${p.payout_code}\n`;
+      });
+      return csv;
+    } else {
+      let csv = 'BenAccountNo,BenName,Amount,Currency,Remark1,Remark2\n';
+      payouts.forEach((p) => {
+        const cleanAcc = (p.destination_account_number || '').replace(/[^0-9]/g, '');
+        const name = `"${p.destination_account_holder.replace(/"/g, '""')}"`;
+        const amount = p.total_net_payout;
+        csv += `${cleanAcc},${name},${amount},IDR,PindahTangan,${p.payout_code}\n`;
+      });
+      return csv;
+    }
+  }
+
+  // Accounting and Reporting CSV Exporters (PRD Section 4.6)
+  public exportAccountingCSV(type: 'sales' | 'payouts' | 'inventory' | 'audit'): string {
+    if (type === 'sales') {
+      let csv = 'OrderNumber,Date,BuyerHandle,BuyerName,Courier,TrackingNumber,Subtotal,ShippingFee,TotalPaid,Status\n';
+      this.data.orders.forEach((o) => {
+        csv += `"${o.order_number}","${o.created_at}","${o.buyer_handle}","${o.buyer_name}","${o.courier_name}","${o.tracking_number || ''}",${o.subtotal_amount},${o.shipping_fee},${o.total_paid},"${o.shipping_status}"\n`;
+      });
+      return csv;
+    } else if (type === 'payouts') {
+      let csv = 'PayoutCode,Date,Consignor,Bank,AccountNo,GrossFloor,SteamDeduction,NetPayout,ItemsCount,Status\n';
+      this.data.payouts.forEach((p) => {
+        csv += `"${p.payout_code}","${p.created_at}","${p.destination_account_holder}","${p.destination_bank}","${p.destination_account_number}",${p.total_gross_floor},${p.total_steam_deduction},${p.total_net_payout},${p.items_count},"${p.status}"\n`;
+      });
+      return csv;
+    } else if (type === 'inventory') {
+      let csv = 'SKU,Hangtag,Title,Brand,Size,Tier,FloorPrice,TargetLivePrice,SoldPrice,Status,RackLocation,ExpiryDate\n';
+      this.data.items.forEach((i) => {
+        csv += `"${i.sku}",${i.hangtag_number},"${i.title}","${i.brand || ''}","${i.size || ''}","${i.category_tier}",${i.floor_price},${i.target_live_price},${i.sold_price || ''},"${i.status}","${i.rack_location || 'RACK-A'}","${i.aging_expiry_date}"\n`;
+      });
+      return csv;
+    } else {
+      let csv = 'LogId,ItemId,ChangedBy,FromStatus,ToStatus,Notes,CreatedAt\n';
+      this.data.logs.forEach((l) => {
+        csv += `"${l.id}","${l.item_id}","${l.changed_by}","${l.from_status || ''}","${l.to_status}","${l.notes || ''}","${l.created_at}"\n`;
+      });
+      return csv;
+    }
+  }
+
   // Reset to default
   public resetToDefault() {
     this.data = {
@@ -864,6 +1285,9 @@ class PindahTanganStore {
       sessions: SEED_SESSIONS,
       logs: SEED_LOGS,
       activeUserId: 'user-ratna-01',
+      currentAdminTier: 'superadmin',
+      activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
+      onStageItemId: 'item-01',
     };
     this.save();
   }
