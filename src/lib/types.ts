@@ -34,9 +34,12 @@ export type LivePlatform = 'tiktok' | 'instagram';
 export interface Profile {
   id: string;
   full_name: string;
+  email?: string;
+  password?: string;
   phone_number: string;
   address?: string;
   city: string;
+  district?: string;
   bank_name?: string;
   bank_account_number?: string;
   bank_account_holder?: string;
@@ -48,6 +51,29 @@ export interface Profile {
   referral_bonus_earned?: number;
   created_at: string;
 }
+
+export interface RegisterParams {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  role?: UserRole;
+  adminTier?: AdminTier;
+  address?: string;
+  city?: string;
+  district?: string;
+  bankName?: string;
+  bankAccountNumber?: string;
+  bankAccountHolder?: string;
+  referralCode?: string;
+}
+
+export interface AuthResult {
+  success: boolean;
+  profile?: Profile;
+  error?: string;
+}
+
 
 // 2. Intake Batch
 export interface IntakeBatch {

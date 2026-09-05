@@ -8,11 +8,29 @@ import { STATUS_LABELS, TIER_CONFIG } from '@/lib/constants';
 import DefectModal from '@/components/consignor/DefectModal';
 import PayoutReceiptModal from '@/components/consignor/PayoutReceiptModal';
 import BankDetailsModal from '@/components/consignor/BankDetailsModal';
-import { ArrowUpRight, ArrowRight, Truck, CheckCircle2, Clock, Sparkles, Package, MessageCircle } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ArrowRight,
+  Truck,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Package,
+  MessageCircle,
+  LogOut,
+  Shirt,
+} from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ConsignorPortalPage() {
-  const { data, activeUser, store } = useStore();
+  const router = useRouter();
+  const { data, activeUser, store, logoutUser } = useStore();
+
+  const handleLogout = () => {
+    logoutUser();
+    router.push('/login');
+  };
 
   const [activeTab, setActiveTab] = useState<string>('all');
   const [selectedDefectItem, setSelectedDefectItem] = useState<ClothesItem | null>(null);
@@ -74,25 +92,32 @@ export default function ConsignorPortalPage() {
               {activeUser.full_name}
             </h1>
             <p className="text-xs text-espresso-500 font-sans">
-              Domisili {activeUser.city} • Rekening {activeUser.bank_name || 'BCA'} (
+              Domisili {activeUser.district ? `${activeUser.district}, ` : ''}{activeUser.city} • Rekening {activeUser.bank_name || 'BCA'} (
               {activeUser.bank_account_number || 'Belum diatur'})
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center flex-wrap gap-2.5">
             <button
               onClick={() => setIsBankModalOpen(true)}
-              className="border border-linen-300 hover:border-espresso-900 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider text-espresso-700 transition"
+              className="border border-linen-300 hover:border-espresso-900 px-4 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider text-espresso-700 bg-white hover:bg-linen-100 transition"
             >
-              Rekening Transfer
+              Atur Rekening
             </button>
             <Link
               href="/booking"
-              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-6 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center gap-1.5 shadow-sm"
+              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition flex items-center gap-1.5 shadow-sm"
             >
               <span>+ Titip Baju Baru</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
+            <button
+              onClick={handleLogout}
+              title="Keluar dari akun ini"
+              className="border border-linen-300 hover:border-red-400 text-espresso-500 hover:text-red-700 p-2.5 rounded-full bg-white transition flex items-center justify-center"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -337,9 +362,34 @@ export default function ConsignorPortalPage() {
 
           {/* Clothes Grid */}
           {filteredItems.length === 0 ? (
-            <div className="py-20 text-center text-espresso-400 text-xs">
-              Belum ada pakaian di kategori ini.
-            </div>
+            totalItems === 0 ? (
+              <div className="py-16 px-6 text-center bg-white rounded-3xl border border-linen-300 max-w-lg mx-auto space-y-4 shadow-xs">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-linen-100 flex items-center justify-center text-terracotta-600">
+                  <Shirt className="w-7 h-7" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="font-serif text-xl font-medium text-espresso-900">
+                    Lemari Konsinyasi Anda Masih Kosong
+                  </h3>
+                  <p className="text-xs text-espresso-600 leading-relaxed max-w-sm mx-auto">
+                    Kumpulkan pakaian preloved layak pakai (gamis, kemeja, blouse, kulot, outer). Kurir PindahTangan siap menjemput langsung ke alamat Anda di Sukabumi secara gratis (minimal 20 pcs).
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    href="/booking"
+                    className="inline-flex items-center gap-2 bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition shadow-sm"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <span>Jadwalkan Penjemputan Pertama</span>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="py-20 text-center text-espresso-400 text-xs">
+                Belum ada pakaian di kategori ini.
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item) => {

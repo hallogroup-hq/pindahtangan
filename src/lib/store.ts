@@ -22,6 +22,8 @@ import {
   TierCategory,
   WhatsAppMessageLog,
   WhatsAppEventType,
+  RegisterParams,
+  AuthResult,
 } from './types';
 import {
   formatBookingConfirmationMessage,
@@ -48,6 +50,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-ratna-01',
     full_name: 'Ibu Ratna Dewi',
+    email: 'ratna@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0812-8899-7711',
     address: 'Jl. Surya Kencana No. 45, RT 02/RW 04',
     city: 'Kota Sukabumi',
@@ -62,6 +66,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-rina-02',
     full_name: 'Ibu Rina Setyowati',
+    email: 'rina@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0813-1122-3344',
     address: 'Perumahan Baros Indah Blok C2 No. 12',
     city: 'Kota Sukabumi',
@@ -74,6 +80,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-siti-host',
     full_name: 'Siti Host TikTok (Talent)',
+    email: 'siti@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0857-9988-1122',
     address: 'Jl. R.E. Martadinata No. 88',
     city: 'Kota Sukabumi',
@@ -86,6 +94,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-admin-studio',
     full_name: 'Studio & QC Lead (Kang Asep)',
+    email: 'asep@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0811-2233-4455',
     address: 'Studio PindahTangan Hub, Jl. Siliwangi No. 102',
     city: 'Kota Sukabumi',
@@ -97,6 +107,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-admin-finance',
     full_name: 'Dewi Kartika (Finance Admin)',
+    email: 'dewi@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0812-3344-5566',
     address: 'Studio PindahTangan Finance, Jl. Siliwangi No. 102',
     city: 'Kota Sukabumi',
@@ -108,6 +120,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-admin-logistics',
     full_name: 'Budi Santoso (Logistics & Packer)',
+    email: 'budi@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0878-1122-3344',
     address: 'Studio PindahTangan Dispatch Hub, Jl. Siliwangi No. 102',
     city: 'Kota Sukabumi',
@@ -119,6 +133,8 @@ export const SEED_PROFILES: Profile[] = [
   {
     id: 'user-admin-super',
     full_name: 'Akmal Irsyad (Owner & Superadmin)',
+    email: 'akmal@pindahtangan.com',
+    password: 'pindahtangan123',
     phone_number: '0811-9988-7766',
     address: 'PindahTangan HQ Sukabumi',
     city: 'Kota Sukabumi',
@@ -685,6 +701,200 @@ export class PindahTanganStore {
 
     return profile;
   }
+
+  // =================================================================
+  // AUTHENTICATION & REAL USER PROFILE ENGINE
+  // =================================================================
+
+  public isUserLoggedIn(): boolean {
+    return Boolean(
+      this.data.activeUserId &&
+        this.data.profiles.some((p) => p.id === this.data.activeUserId)
+    );
+  }
+
+  public registerUser(params: RegisterParams): AuthResult {
+    // 1. Input Validation
+    if (!params.fullName || !params.fullName.trim()) {
+      return { success: false, error: 'Nama lengkap wajib diisi.' };
+    }
+    if (!params.email || !params.email.includes('@')) {
+      return { success: false, error: 'Format email tidak valid.' };
+    }
+    if (!params.phoneNumber || params.phoneNumber.trim().length < 9) {
+      return { success: false, error: 'Nomor WhatsApp minimal 9 digit.' };
+    }
+    if (!params.password || params.password.length < 6) {
+      return { success: false, error: 'Kata sandi minimal 6 karakter.' };
+    }
+
+    const cleanEmail = params.email.trim().toLowerCase();
+    const cleanPhone = params.phoneNumber.replace(/\D/g, '');
+
+    // 2. Uniqueness verification
+    const existingEmail = this.data.profiles.find(
+      (p) => p.email && p.email.trim().toLowerCase() === cleanEmail
+    );
+    if (existingEmail) {
+      return {
+        success: false,
+        error: `Email "${cleanEmail}" sudah terdaftar. Silakan masuk dengan akun tersebut.`,
+      };
+    }
+
+    const existingPhone = this.data.profiles.find(
+      (p) => p.phone_number.replace(/\D/g, '') === cleanPhone
+    );
+    if (existingPhone) {
+      return {
+        success: false,
+        error: `Nomor WhatsApp "${params.phoneNumber}" sudah terdaftar. Silakan gunakan menu Masuk.`,
+      };
+    }
+
+    // 3. Referral code check & reward
+    let referrer: Profile | undefined;
+    if (params.referralCode && params.referralCode.trim()) {
+      const codeUpper = params.referralCode.trim().toUpperCase();
+      referrer = this.data.profiles.find(
+        (p) => p.referral_code && p.referral_code.toUpperCase() === codeUpper
+      );
+      if (referrer) {
+        referrer.referral_bonus_earned = (referrer.referral_bonus_earned || 0) + 10000;
+        this.pushWhatsAppLog({
+          eventType: 'BOOKING_CONFIRMATION',
+          recipientPhone: referrer.phone_number,
+          recipientName: referrer.full_name,
+          messageText: `Selamat ${referrer.full_name}! Teman Anda (${params.fullName}) baru saja mendaftar di PindahTangan menggunakan kode referral Anda (${codeUpper}). Bonus referral Rp 10.000 telah ditambahkan ke saldo payout Jumat Anda!`,
+        });
+      }
+    }
+
+    // 4. Generate unique ID & personal referral code
+    const initials =
+      params.fullName
+        .split(' ')[0]
+        .toUpperCase()
+        .replace(/[^A-Z]/g, '') || 'PENITIP';
+    const newReferralCode = `${initials}-${Math.floor(100 + Math.random() * 900)}`;
+    const newId = `user-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+
+    const newProfile: Profile = {
+      id: newId,
+      full_name: params.fullName.trim(),
+      email: cleanEmail,
+      password: params.password,
+      phone_number: params.phoneNumber.trim(),
+      address: params.address?.trim() || 'Kota Sukabumi',
+      city: params.city?.trim() || 'Kota Sukabumi',
+      district: params.district?.trim() || 'Cikole',
+      bank_name: params.bankName?.trim() || 'BCA',
+      bank_account_number: params.bankAccountNumber?.trim() || '',
+      bank_account_holder: params.bankAccountHolder?.trim() || params.fullName.trim(),
+      role: params.role || 'consignor',
+      admin_tier: params.role === 'admin' ? (params.adminTier || 'superadmin') : undefined,
+      referral_code: newReferralCode,
+      referred_by: referrer ? referrer.referral_code : undefined,
+      referral_bonus_earned: 0,
+      created_at: new Date().toISOString(),
+    };
+
+    this.data.profiles.push(newProfile);
+    this.data.activeUserId = newProfile.id;
+
+    if (newProfile.role === 'admin' && newProfile.admin_tier) {
+      this.data.currentAdminTier = newProfile.admin_tier;
+    }
+
+    this.save();
+
+    // Push welcome WhatsApp message log
+    this.pushWhatsAppLog({
+      eventType: 'BOOKING_CONFIRMATION',
+      recipientPhone: newProfile.phone_number,
+      recipientName: newProfile.full_name,
+      messageText: `Halo ${newProfile.full_name}! Selamat datang di PindahTangan Sukabumi 🌿.\n\nAkun Anda telah aktif (${newProfile.role === 'consignor' ? 'Penitip Lemari' : newProfile.role === 'host' ? 'Host Live Talent' : 'Staf Operasional'}). Kode referral pribadi Anda adalah *${newReferralCode}*.\nBagikan ke teman Anda untuk mendapatkan bonus Rp 10.000 setiap kali mereka menitipkan pakaian!`,
+    });
+
+    return { success: true, profile: newProfile };
+  }
+
+  public loginUser(identifier: string, password: string): AuthResult {
+    if (!identifier || !identifier.trim()) {
+      return { success: false, error: 'Email atau nomor WhatsApp wajib diisi.' };
+    }
+    if (!password) {
+      return { success: false, error: 'Kata sandi wajib diisi.' };
+    }
+
+    const cleanInput = identifier.trim().toLowerCase();
+    const cleanPhone = identifier.replace(/\D/g, '');
+
+    const profile = this.data.profiles.find((p) => {
+      const pEmail = p.email ? p.email.trim().toLowerCase() : '';
+      const pPhone = p.phone_number ? p.phone_number.replace(/\D/g, '') : '';
+      return (
+        (pEmail && pEmail === cleanInput) ||
+        (cleanPhone.length >= 8 && pPhone === cleanPhone)
+      );
+    });
+
+    if (!profile) {
+      return {
+        success: false,
+        error:
+          'Akun dengan email atau nomor WhatsApp ini tidak ditemukan. Silakan periksa kembali atau daftar akun baru.',
+      };
+    }
+
+    // Check password
+    const expectedPassword = profile.password || 'pindahtangan123';
+    if (password !== expectedPassword) {
+      return {
+        success: false,
+        error: 'Kata sandi yang Anda masukkan tidak sesuai. Silakan periksa kembali.',
+      };
+    }
+
+    // Success login
+    this.data.activeUserId = profile.id;
+
+    if (profile.role === 'admin') {
+      if (profile.admin_tier) {
+        this.data.currentAdminTier = profile.admin_tier;
+      } else if (profile.id === 'user-admin-studio') {
+        this.data.currentAdminTier = 'studio_lead';
+      } else if (profile.id === 'user-admin-logistics') {
+        this.data.currentAdminTier = 'logistics';
+      } else if (profile.id === 'user-admin-finance') {
+        this.data.currentAdminTier = 'finance';
+      } else {
+        this.data.currentAdminTier = 'superadmin';
+      }
+    }
+
+    this.save();
+    return { success: true, profile };
+  }
+
+  public logoutUser(): { success: boolean } {
+    this.data.activeUserId = '';
+    this.save();
+    return { success: true };
+  }
+
+  public updateProfile(
+    userId: string,
+    updates: Partial<Profile>
+  ): Profile | undefined {
+    const profile = this.data.profiles.find((p) => p.id === userId);
+    if (!profile) return undefined;
+
+    Object.assign(profile, updates);
+    this.save();
+    return profile;
+  }
+
 
   // RBAC Admin Tier
   public getCurrentAdminTier(): AdminTier {

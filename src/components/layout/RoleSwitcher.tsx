@@ -60,6 +60,20 @@ export default function RoleSwitcher() {
     },
   ];
 
+  const customUsers = data.profiles
+    .filter((p) => !roles.some((r) => r.id === p.id))
+    .map((p) => ({
+      id: p.id,
+      name: p.full_name,
+      role: p.role === 'admin' ? 'Admin' : p.role === 'host' ? 'Host Live' : 'Consignor',
+      tier: (p.admin_tier || (p.role === 'admin' ? 'superadmin' : null)) as any,
+      desc: `Akun Real: ${p.email || p.phone_number}`,
+      path: p.role === 'admin' ? '/admin' : p.role === 'host' ? '/host' : '/portal',
+      isCustom: true,
+    }));
+
+  const allDisplayRoles = [...customUsers, ...roles];
+
   return (
     <div className="fixed bottom-5 right-5 z-50 font-sans">
       {/* Popover Dropdown */}
@@ -92,8 +106,8 @@ export default function RoleSwitcher() {
             </div>
           </div>
 
-          <div className="space-y-1">
-            {roles.map((r) => {
+          <div className="space-y-1 max-h-80 overflow-y-auto">
+            {allDisplayRoles.map((r) => {
               const isSelected = activeUser?.id === r.id;
               return (
                 <button

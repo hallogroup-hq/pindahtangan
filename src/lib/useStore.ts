@@ -39,14 +39,19 @@ export function useStore() {
     };
   }, [store]);
 
-  const activeUser: Profile =
-    data.profiles.find((p) => p.id === data.activeUserId) || data.profiles[0];
+  const currentUser: Profile | null =
+    data.profiles.find((p) => p.id === data.activeUserId) || null;
+  const isLoggedIn: boolean = Boolean(currentUser);
+  const activeUser: Profile = currentUser || data.profiles[0];
 
   return {
     store,
     data,
     activeUser,
+    currentUser,
+    isLoggedIn,
     cloudStatus,
     setActiveUser: (userId: string) => store.setActiveUser(userId),
+    logoutUser: () => store.logoutUser(),
   };
 }
