@@ -477,24 +477,27 @@ export interface AppStoreData {
   onStageItemId?: string | null;
 }
 
-class PindahTanganStore {
+export class PindahTanganStore {
   private data: AppStoreData;
   private listeners: Set<() => void> = new Set();
+  private persistToLocalStorage: boolean;
 
-  constructor() {
-    this.data = this.loadFromStorage();
+  constructor(initialData?: Partial<AppStoreData>, persistToLocalStorage: boolean = true) {
+    this.persistToLocalStorage = persistToLocalStorage;
+    const defaultData = this.loadFromStorage();
+    this.data = initialData ? { ...defaultData, ...initialData } : defaultData;
   }
 
   private loadFromStorage(): AppStoreData {
     if (typeof window === 'undefined') {
       return {
-        profiles: SEED_PROFILES,
-        batches: SEED_BATCHES,
-        items: SEED_ITEMS,
-        orders: SEED_ORDERS,
-        payouts: SEED_PAYOUTS,
-        sessions: SEED_SESSIONS,
-        logs: SEED_LOGS,
+        profiles: JSON.parse(JSON.stringify(SEED_PROFILES)),
+        batches: JSON.parse(JSON.stringify(SEED_BATCHES)),
+        items: JSON.parse(JSON.stringify(SEED_ITEMS)),
+        orders: JSON.parse(JSON.stringify(SEED_ORDERS)),
+        payouts: JSON.parse(JSON.stringify(SEED_PAYOUTS)),
+        sessions: JSON.parse(JSON.stringify(SEED_SESSIONS)),
+        logs: JSON.parse(JSON.stringify(SEED_LOGS)),
         activeUserId: 'user-ratna-01',
         currentAdminTier: 'superadmin',
         activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
@@ -521,13 +524,13 @@ class PindahTanganStore {
     }
 
     const initial: AppStoreData = {
-      profiles: SEED_PROFILES,
-      batches: SEED_BATCHES,
-      items: SEED_ITEMS,
-      orders: SEED_ORDERS,
-      payouts: SEED_PAYOUTS,
-      sessions: SEED_SESSIONS,
-      logs: SEED_LOGS,
+      profiles: JSON.parse(JSON.stringify(SEED_PROFILES)),
+      batches: JSON.parse(JSON.stringify(SEED_BATCHES)),
+      items: JSON.parse(JSON.stringify(SEED_ITEMS)),
+      orders: JSON.parse(JSON.stringify(SEED_ORDERS)),
+      payouts: JSON.parse(JSON.stringify(SEED_PAYOUTS)),
+      sessions: JSON.parse(JSON.stringify(SEED_SESSIONS)),
+      logs: JSON.parse(JSON.stringify(SEED_LOGS)),
       activeUserId: 'user-ratna-01',
       currentAdminTier: 'superadmin',
       activeLiveRunSheet: {
@@ -542,12 +545,17 @@ class PindahTanganStore {
   }
 
   private save() {
-    if (typeof window !== 'undefined') {
+    if (this.persistToLocalStorage && typeof window !== 'undefined') {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
       } catch {}
     }
     this.notify();
+  }
+
+  public setData(newData: Partial<AppStoreData>) {
+    this.data = { ...this.data, ...newData };
+    this.save();
   }
 
   public subscribe(listener: () => void) {
@@ -1277,13 +1285,13 @@ class PindahTanganStore {
   // Reset to default
   public resetToDefault() {
     this.data = {
-      profiles: SEED_PROFILES,
-      batches: SEED_BATCHES,
-      items: SEED_ITEMS,
-      orders: SEED_ORDERS,
-      payouts: SEED_PAYOUTS,
-      sessions: SEED_SESSIONS,
-      logs: SEED_LOGS,
+      profiles: JSON.parse(JSON.stringify(SEED_PROFILES)),
+      batches: JSON.parse(JSON.stringify(SEED_BATCHES)),
+      items: JSON.parse(JSON.stringify(SEED_ITEMS)),
+      orders: JSON.parse(JSON.stringify(SEED_ORDERS)),
+      payouts: JSON.parse(JSON.stringify(SEED_PAYOUTS)),
+      sessions: JSON.parse(JSON.stringify(SEED_SESSIONS)),
+      logs: JSON.parse(JSON.stringify(SEED_LOGS)),
       activeUserId: 'user-ratna-01',
       currentAdminTier: 'superadmin',
       activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
