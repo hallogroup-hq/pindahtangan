@@ -68,6 +68,7 @@ export function createTestStore(customData?: Partial<AppStoreData>): PindahTanga
       }),
     ],
     logs: [],
+    whatsappLogs: [],
     activeUserId: 'user-ratna-01',
     currentAdminTier: 'superadmin',
     activeLiveRunSheet: { 'session-live-01': ['item-02', 'item-01'] },

@@ -20,7 +20,18 @@ import {
   FulfillmentScanResult,
   HostShiftSummary,
   TierCategory,
+  WhatsAppMessageLog,
+  WhatsAppEventType,
 } from './types';
+import {
+  formatBookingConfirmationMessage,
+  formatQcRejectAlertMessage,
+  formatLiveSoldCongratsMessage,
+  formatFridayPayoutSlipMessage,
+  formatOrderShippedMessage,
+  createDirectWhatsAppLink,
+  sendWhatsAppNotification,
+} from './whatsapp';
 import { BUSINESS_RULES } from './constants';
 import {
   generateBatchCode,
@@ -463,6 +474,61 @@ export const SEED_LOGS: ItemStatusLog[] = [
   },
 ];
 
+export const SEED_WHATSAPP_LOGS: WhatsAppMessageLog[] = [
+  {
+    id: 'wa-seed-01',
+    eventType: 'BOOKING_CONFIRMATION',
+    recipientPhone: '0812-8899-7711',
+    recipientName: 'Ibu Ratna Dewi',
+    messageText: formatBookingConfirmationMessage({
+      consignorName: 'Ibu Ratna Dewi',
+      batchCode: 'PT-20260901-001',
+      count: 25,
+      pickupAddress: 'Jl. Surya Kencana No. 45, Cikole',
+      pickupDate: '2026-09-01',
+      pickupSlot: 'pagi',
+    }),
+    waLink: createDirectWhatsAppLink('0812-8899-7711', 'Halo Ibu Ratna Dewi...'),
+    status: 'delivered',
+    provider: 'sandbox',
+    sentAt: '2026-09-01T09:15:00Z',
+  },
+  {
+    id: 'wa-seed-02',
+    eventType: 'LIVE_SOLD_CONGRATS',
+    recipientPhone: '0812-8899-7711',
+    recipientName: 'Ibu Ratna Dewi',
+    messageText: formatLiveSoldCongratsMessage({
+      consignorName: 'Ibu Ratna Dewi',
+      itemTitle: 'Mango Casual Pleated Culottes',
+      hangtagNumber: 3,
+      soldPrice: 60000,
+      floorPrice: 35000,
+      netPayout: 32500,
+    }),
+    waLink: createDirectWhatsAppLink('0812-8899-7711', 'Kabar Gembira! Baju Anda Terjual di Live TikTok!'),
+    status: 'delivered',
+    provider: 'sandbox',
+    sentAt: '2026-09-05T16:45:00Z',
+  },
+  {
+    id: 'wa-seed-03',
+    eventType: 'QC_REJECT_ALERT',
+    recipientPhone: '0813-1122-3344',
+    recipientName: 'Ibu Rina Setyowati',
+    messageText: formatQcRejectAlertMessage({
+      consignorName: 'Ibu Rina Setyowati',
+      itemTitle: 'Baju Kurung Batik Sukabumi',
+      defectNotes: 'Noda minyak membandel di kerah bagian depan',
+      defectPhotoUrl: 'https://images.unsplash.com/photo-1584285418504-0052ec77846f?w=800&q=80',
+    }),
+    waLink: createDirectWhatsAppLink('0813-1122-3344', 'Halo Ibu Rina Setyowati, update kurasi dari Studio QC...'),
+    status: 'delivered',
+    provider: 'sandbox',
+    sentAt: '2026-09-03T11:20:00Z',
+  },
+];
+
 export interface AppStoreData {
   profiles: Profile[];
   batches: IntakeBatch[];
@@ -471,6 +537,7 @@ export interface AppStoreData {
   payouts: Payout[];
   sessions: LiveSession[];
   logs: ItemStatusLog[];
+  whatsappLogs: WhatsAppMessageLog[];
   activeUserId: string;
   currentAdminTier: AdminTier;
   activeLiveRunSheet: Record<string, string[]>;
@@ -498,6 +565,7 @@ export class PindahTanganStore {
         payouts: JSON.parse(JSON.stringify(SEED_PAYOUTS)),
         sessions: JSON.parse(JSON.stringify(SEED_SESSIONS)),
         logs: JSON.parse(JSON.stringify(SEED_LOGS)),
+        whatsappLogs: JSON.parse(JSON.stringify(SEED_WHATSAPP_LOGS)),
         activeUserId: 'user-ratna-01',
         currentAdminTier: 'superadmin',
         activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
@@ -511,6 +579,7 @@ export class PindahTanganStore {
         const parsed = JSON.parse(stored);
         return {
           ...parsed,
+          whatsappLogs: parsed.whatsappLogs || JSON.parse(JSON.stringify(SEED_WHATSAPP_LOGS)),
           currentAdminTier: parsed.currentAdminTier || 'superadmin',
           activeLiveRunSheet: parsed.activeLiveRunSheet || {
             'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'],
@@ -531,6 +600,7 @@ export class PindahTanganStore {
       payouts: JSON.parse(JSON.stringify(SEED_PAYOUTS)),
       sessions: JSON.parse(JSON.stringify(SEED_SESSIONS)),
       logs: JSON.parse(JSON.stringify(SEED_LOGS)),
+      whatsappLogs: JSON.parse(JSON.stringify(SEED_WHATSAPP_LOGS)),
       activeUserId: 'user-ratna-01',
       currentAdminTier: 'superadmin',
       activeLiveRunSheet: {
@@ -596,6 +666,55 @@ export class PindahTanganStore {
     this.save();
   }
 
+  // WhatsApp Notification Engine
+  public getWhatsAppLogs(): WhatsAppMessageLog[] {
+    return this.data.whatsappLogs || [];
+  }
+
+  public pushWhatsAppLog(params: {
+    eventType: WhatsAppEventType;
+    recipientPhone: string;
+    recipientName: string;
+    messageText: string;
+    mediaUrl?: string;
+  }): WhatsAppMessageLog {
+    if (!this.data.whatsappLogs) {
+      this.data.whatsappLogs = [];
+    }
+
+    const waLink = createDirectWhatsAppLink(params.recipientPhone, params.messageText);
+    const newLog: WhatsAppMessageLog = {
+      id: `wa-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      eventType: params.eventType,
+      recipientPhone: params.recipientPhone,
+      recipientName: params.recipientName,
+      messageText: params.messageText,
+      mediaUrl: params.mediaUrl,
+      waLink,
+      status: 'delivered',
+      provider: 'sandbox',
+      sentAt: new Date().toISOString(),
+    };
+
+    this.data.whatsappLogs.unshift(newLog);
+    if (this.data.whatsappLogs.length > 100) {
+      this.data.whatsappLogs = this.data.whatsappLogs.slice(0, 100);
+    }
+
+    if (typeof window !== 'undefined') {
+      sendWhatsAppNotification({
+        eventType: params.eventType,
+        recipientPhone: params.recipientPhone,
+        recipientName: params.recipientName,
+        messageText: params.messageText,
+        mediaUrl: params.mediaUrl,
+      }).catch(() => {});
+    }
+
+    this.save();
+    return newLog;
+  }
+
   // Booking Action
   public bookIntakeBatch(params: {
     consignorName: string;
@@ -639,6 +758,23 @@ export class PindahTanganStore {
 
     this.data.batches.unshift(newBatch);
     this.data.activeUserId = consignor.id;
+
+    // Automated WhatsApp Booking Confirmation Dispatch
+    const bookingMsg = formatBookingConfirmationMessage({
+      consignorName: consignor.full_name,
+      batchCode: newBatch.batch_code,
+      count: newBatch.estimated_count,
+      pickupAddress: newBatch.pickup_address,
+      pickupDate: newBatch.pickup_date || new Date().toISOString().split('T')[0],
+      pickupSlot: 'pagi',
+    });
+    this.pushWhatsAppLog({
+      eventType: 'BOOKING_CONFIRMATION',
+      recipientPhone: consignor.phone_number,
+      recipientName: consignor.full_name,
+      messageText: bookingMsg,
+    });
+
     this.save();
     return { batch: newBatch, consignor };
   }
@@ -856,6 +992,25 @@ export class PindahTanganStore {
     };
 
     this.data.items.push(newItem);
+
+    // Automated WhatsApp QC Reject Alert Dispatch
+    const consignor = this.data.profiles.find((p) => p.id === params.consignorId);
+    if (consignor) {
+      const rejectMsg = formatQcRejectAlertMessage({
+        consignorName: consignor.full_name,
+        itemTitle: newItem.title,
+        defectNotes: newItem.defect_notes || 'Defek noda/cacat fisik',
+        defectPhotoUrl: newItem.defect_photo_url || undefined,
+      });
+      this.pushWhatsAppLog({
+        eventType: 'QC_REJECT_ALERT',
+        recipientPhone: consignor.phone_number,
+        recipientName: consignor.full_name,
+        messageText: rejectMsg,
+        mediaUrl: newItem.defect_photo_url || undefined,
+      });
+    }
+
     this.save();
     return newItem;
   }
@@ -920,6 +1075,25 @@ export class PindahTanganStore {
       session.total_items_sold += 1;
       session.total_gmv += params.soldPrice;
       session.host_commission_earned += BUSINESS_RULES.HOST_COMMISSION_PER_PIECE;
+    }
+
+    // Automated WhatsApp Live Sold Dispatch to Consignor
+    const consignor = this.data.profiles.find((p) => p.id === item.consignor_id);
+    if (consignor) {
+      const soldMsg = formatLiveSoldCongratsMessage({
+        consignorName: consignor.full_name,
+        itemTitle: item.title,
+        hangtagNumber: item.hangtag_number,
+        soldPrice: params.soldPrice,
+        floorPrice: item.floor_price,
+        netPayout: Math.max(0, item.floor_price - item.steam_fee),
+      });
+      this.pushWhatsAppLog({
+        eventType: 'LIVE_SOLD_CONGRATS',
+        recipientPhone: consignor.phone_number,
+        recipientName: consignor.full_name,
+        messageText: soldMsg,
+      });
     }
 
     // Add log
@@ -1012,6 +1186,28 @@ export class PindahTanganStore {
         item.status = 'paid_out';
         item.payout_id = payout.id;
       });
+
+      // Automated WhatsApp Friday Payout Slip Dispatch
+      if (consignor) {
+        const payoutMsg = formatFridayPayoutSlipMessage({
+          consignorName: consignor.full_name,
+          payoutCode: payout.payout_code,
+          periodStart: payout.period_start,
+          periodEnd: payout.period_end,
+          itemsCount: payout.items_count,
+          grossFloor: payout.total_gross_floor,
+          steamDeduction: payout.total_steam_deduction,
+          netPayout: payout.total_net_payout,
+          bankName: payout.destination_bank,
+          accountNumber: payout.destination_account_number,
+        });
+        this.pushWhatsAppLog({
+          eventType: 'FRIDAY_PAYOUT_SLIP',
+          recipientPhone: consignor.phone_number,
+          recipientName: consignor.full_name,
+          messageText: payoutMsg,
+        });
+      }
 
       this.data.payouts.unshift(payout);
       generatedPayouts.push(payout);
@@ -1214,13 +1410,40 @@ export class PindahTanganStore {
         order.shipping_status = 'shipped';
         order.dispatched_at = nowStr;
 
-        const item = this.data.items.find((i) => i.order_id === order.id);
-        if (item) {
-          item.status = 'shipped';
+        const matchedItems = this.data.items.filter((i) => i.order_id === order.id);
+        if (matchedItems.length > 0) {
+          matchedItems.forEach((i) => {
+            i.status = 'shipped';
+          });
+        } else {
+          const singleItem = this.data.items.find((i) => i.order_id === order.id);
+          if (singleItem) {
+            singleItem.status = 'shipped';
+          }
         }
 
         trackingMap[order.id] = tracking;
         count++;
+
+        // Hook WhatsApp Notification to Buyer
+        if (order.buyer_phone) {
+          const itemsCount = matchedItems.length > 0 ? matchedItems.length : 1;
+          const msg = formatOrderShippedMessage({
+            buyerName: order.buyer_name,
+            buyerHandle: order.buyer_handle,
+            orderNumber: order.order_number,
+            courierName: courierName,
+            trackingNumber: tracking,
+            itemsCount: itemsCount,
+          });
+
+          this.pushWhatsAppLog({
+            eventType: 'ORDER_SHIPPED_BUYER',
+            recipientPhone: order.buyer_phone,
+            recipientName: order.buyer_name,
+            messageText: msg,
+          });
+        }
       }
     });
 
@@ -1296,6 +1519,7 @@ export class PindahTanganStore {
       currentAdminTier: 'superadmin',
       activeLiveRunSheet: { 'session-live-01': ['item-01', 'item-02', 'item-03', 'item-04'] },
       onStageItemId: 'item-01',
+      whatsappLogs: JSON.parse(JSON.stringify(SEED_WHATSAPP_LOGS)),
     };
     this.save();
   }

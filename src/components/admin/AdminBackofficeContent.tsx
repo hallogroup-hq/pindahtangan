@@ -10,6 +10,7 @@ import FulfillmentModule from './FulfillmentModule';
 import FridayPayoutModule from './FridayPayoutModule';
 import AgingRetentionModule from './AgingRetentionModule';
 import AnalyticsReportingModule from './AnalyticsReportingModule';
+import WhatsAppNotificationModal from './WhatsAppNotificationModal';
 import {
   BarChart3,
   Shirt,
@@ -134,6 +135,7 @@ export function AdminBackofficeContent({ initialTab }: AdminBackofficeProps) {
     store.getCurrentAdminTier() || 'superadmin'
   );
   const [activeTab, setActiveTab] = useState<AdminTab>(normalizeTab(initialTab));
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
 
   // Sync tier changes
   const handleTierChange = (newTier: AdminTier) => {
@@ -176,6 +178,8 @@ export function AdminBackofficeContent({ initialTab }: AdminBackofficeProps) {
         activeTier={activeTier}
         onTierChange={handleTierChange}
         activeTabTitle={TAB_METADATA[activeTab]?.title}
+        onOpenWhatsAppModal={() => setIsWhatsAppModalOpen(true)}
+        whatsAppLogCount={data.whatsappLogs?.length || 0}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
@@ -226,6 +230,12 @@ export function AdminBackofficeContent({ initialTab }: AdminBackofficeProps) {
           {activeTab === 'kpi' && <AnalyticsReportingModule />}
         </div>
       </main>
+
+      {/* Global Admin WhatsApp Center Modal */}
+      <WhatsAppNotificationModal
+        isOpen={isWhatsAppModalOpen}
+        onClose={() => setIsWhatsAppModalOpen(false)}
+      />
     </div>
   );
 }

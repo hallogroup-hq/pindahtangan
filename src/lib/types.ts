@@ -210,3 +210,24 @@ export interface UnitEconomicsSummary {
   averageSoldPrice: number;
   averageFloorPrice: number;
 }
+
+// 11. WhatsApp Message Log
+export type WhatsAppEventType =
+  | 'BOOKING_CONFIRMATION'
+  | 'QC_REJECT_ALERT'
+  | 'LIVE_SOLD_CONGRATS'
+  | 'FRIDAY_PAYOUT_SLIP'
+  | 'ORDER_SHIPPED_BUYER';
+
+export interface WhatsAppMessageLog {
+  id: string;
+  eventType: WhatsAppEventType;
+  recipientPhone: string;
+  recipientName: string;
+  messageText: string;
+  mediaUrl?: string;
+  waLink: string;
+  status: 'sent' | 'delivered' | 'queued' | 'simulated';
+  provider: 'fonnte' | 'wablas' | 'sandbox';
+  sentAt: string;
+}

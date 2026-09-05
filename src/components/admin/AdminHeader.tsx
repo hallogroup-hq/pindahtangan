@@ -3,12 +3,14 @@
 import React from 'react';
 import { AdminTier } from '@/lib/types';
 import { useStore } from '@/lib/useStore';
-import { Shield, Sparkles, Truck, CircleDollarSign, CheckCircle2, Database } from 'lucide-react';
+import { Shield, Sparkles, Truck, CircleDollarSign, CheckCircle2, Database, MessageSquare } from 'lucide-react';
 
 interface AdminHeaderProps {
   activeTier: AdminTier;
   onTierChange: (tier: AdminTier) => void;
   activeTabTitle: string;
+  onOpenWhatsAppModal?: () => void;
+  whatsAppLogCount?: number;
 }
 
 const TIER_DETAILS: Record<
@@ -60,6 +62,8 @@ export default function AdminHeader({
   activeTier,
   onTierChange,
   activeTabTitle,
+  onOpenWhatsAppModal,
+  whatsAppLogCount,
 }: AdminHeaderProps) {
   const { cloudStatus } = useStore();
   const currentDetails = TIER_DETAILS[activeTier];
@@ -89,6 +93,22 @@ export default function AdminHeader({
                   <Database className="w-2.5 h-2.5 text-espresso-400" />
                   <span>Local Cache Mode</span>
                 </span>
+              )}
+              {onOpenWhatsAppModal && (
+                <button
+                  type="button"
+                  onClick={onOpenWhatsAppModal}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-800 hover:bg-emerald-700 text-white shadow-xs transition-colors"
+                  title="Pusat Otomasi WhatsApp & Dispatch Simulator"
+                >
+                  <MessageSquare className="w-3 h-3 text-emerald-300" />
+                  <span>WA Dispatch Engine</span>
+                  {whatsAppLogCount !== undefined && whatsAppLogCount > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-200 text-[9px] font-bold">
+                      {whatsAppLogCount}
+                    </span>
+                  )}
+                </button>
               )}
             </div>
             <div className="flex items-baseline gap-3">
