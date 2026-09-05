@@ -233,6 +233,75 @@ export default function ConsignorPortalPage() {
           </div>
         </div>
 
+        {/* Referral Card: Ajak Tetangga Bersih Lemari */}
+        <div className="bg-gradient-to-r from-linen-100 via-linen-100/90 to-linen-200/50 border border-linen-300 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-terracotta-700 font-bold">
+                  PROGRAM KOMUNITAS SUKABUMI
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold">
+                  Bonus Rp 10.000 / Batch Lolos QC
+                </span>
+              </div>
+              <h3 className="font-serif text-lg font-medium text-espresso-900">
+                Ajak Tetangga Bersih Lemari
+              </h3>
+              <p className="text-xs text-espresso-600 leading-relaxed max-w-xl">
+                Bagikan kode unik Anda kepada teman atau tetangga di Kota Sukabumi. Setiap batch yang berhasil dijemput dan lolos kurasi, Anda otomatis mendapatkan bonus tunai Rp 10.000 yang dicairkan bersama gajian Jumat.
+              </p>
+            </div>
+
+            <div className="bg-white/90 p-4 rounded-xl border border-linen-300 text-left sm:text-right shrink-0">
+              <span className="text-[10px] font-mono text-espresso-500 uppercase block">
+                Total Bonus Terkumpul
+              </span>
+              <span className="font-serif text-2xl font-bold text-emerald-800 block mt-0.5">
+                {formatIDR(activeUser.referral_bonus_earned || 0)}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-linen-200/80">
+            <div className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-linen-300 flex-1">
+              <span className="text-xs font-mono text-espresso-500">Kode:</span>
+              <span className="text-xs font-mono font-bold text-espresso-900 tracking-wider">
+                {activeUser.referral_code || 'RATNA-SKB'}
+              </span>
+              <span className="text-espresso-300">|</span>
+              <span className="text-[11px] font-mono text-espresso-600 truncate">
+                https://pindahtangan-zeta.vercel.app/booking?ref={activeUser.referral_code || 'RATNA-SKB'}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  const url = `https://pindahtangan-zeta.vercel.app/booking?ref=${activeUser.referral_code || 'RATNA-SKB'}`;
+                  navigator.clipboard.writeText(url);
+                  alert('Tautan referral berhasil disalin!');
+                }}
+                className="px-3.5 py-2.5 rounded-xl bg-linen-100 hover:bg-linen-200 border border-linen-300 text-espresso-800 text-xs font-medium transition"
+              >
+                Salin Tautan
+              </button>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  `Halo! Yuk bersihkan lemari pakaianmu dan dapatkan uang tunai setiap Jumat lewat PindahTangan Sukabumi. Kurir jemput gratis ke rumah: https://pindahtangan-zeta.vercel.app/booking?ref=${activeUser.referral_code || 'RATNA-SKB'}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-medium transition flex items-center gap-1.5 shadow-xs"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Bagikan ke WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Minimalist Tabs */}
         <div className="space-y-6">
           <div className="flex items-center justify-between border-b border-linen-300 pb-3 flex-wrap gap-4">

@@ -23,8 +23,12 @@ import {
   ChevronRight,
   Send,
   AlertCircle,
+  Volume2,
+  BellRing,
+  Zap,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { sound } from '@/lib/sound';
 
 export default function LiveOrchestrationModule() {
   const { data, store } = useStore();
@@ -128,6 +132,7 @@ export default function LiveOrchestrationModule() {
         soldPrice: soldPriceInput || soldModalItem.target_live_price,
       });
 
+      sound.playSoldCheer();
       confetti({
         particleCount: 50,
         spread: 60,
@@ -150,6 +155,7 @@ export default function LiveOrchestrationModule() {
 
     try {
       store.coPilotAdjustPrice(adjustPriceItem.id, newPriceInput);
+      sound.playGongDeal();
       showToast(
         `Harga live SKU ${adjustPriceItem.sku} disesuaikan menjadi ${formatIDR(newPriceInput)}.`
       );
@@ -505,6 +511,40 @@ export default function LiveOrchestrationModule() {
                         <Sliders className="w-4 h-4" />
                       </button>
                     </div>
+
+                    {/* Live Studio Soundboard */}
+                    <div className="pt-2 border-t border-espresso-800 space-y-1.5">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-linen-400">
+                        <span className="flex items-center gap-1">
+                          <Volume2 className="w-3 h-3 text-terracotta-400" />
+                          <span>Soundboard Siaran Live (Web Audio)</span>
+                        </span>
+                        <span>Tanpa Lag</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => sound.playSoldCheer()}
+                          className="px-2 py-1.5 rounded-lg bg-espresso-800 hover:bg-emerald-800/80 text-linen-200 hover:text-white text-[10px] font-sans font-medium transition text-center border border-espresso-700 hover:border-emerald-500"
+                        >
+                          🎉 Terjual!
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => sound.playGongDeal()}
+                          className="px-2 py-1.5 rounded-lg bg-espresso-800 hover:bg-amber-800/80 text-linen-200 hover:text-white text-[10px] font-sans font-medium transition text-center border border-espresso-700 hover:border-amber-500"
+                        >
+                          🥋 Gong Deal
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => sound.playCountdownTick()}
+                          className="px-2 py-1.5 rounded-lg bg-espresso-800 hover:bg-terracotta-800/80 text-linen-200 hover:text-white text-[10px] font-sans font-medium transition text-center border border-espresso-700 hover:border-terracotta-500"
+                        >
+                          ⏱️ Tick 30s
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -613,6 +653,75 @@ export default function LiveOrchestrationModule() {
                       </div>
                     ))}
                 </div>
+              </div>
+
+              {/* TikTok Live Webhook Ingestion Simulator */}
+              <div className="p-4 bg-linen-100/70 rounded-xl border border-linen-200 space-y-3 pt-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-6 w-6 rounded-md bg-espresso-900 text-linen-100 flex items-center justify-center text-[10px] font-mono font-bold">
+                      TT
+                    </div>
+                    <div>
+                      <h4 className="font-serif text-xs font-semibold text-espresso-900">
+                        TikTok Shop Webhook Ingestion
+                      </h4>
+                      <p className="text-[9px] font-mono text-espresso-500">
+                        /api/webhooks/orders
+                      </p>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold">
+                    Live Webhook Active
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-espresso-600 leading-relaxed">
+                  Terima checkout penonton TikTok Live otomatis hands-free ke antrean logistik PindahTangan.
+                </p>
+
+                <button
+                  type="button"
+                  disabled={!onStageItem}
+                  onClick={async () => {
+                    if (!onStageItem) return;
+                    try {
+                      const res = await fetch('/api/webhooks/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          event: 'order.created',
+                          source: 'tiktok_shop_live',
+                          sku: onStageItem.sku,
+                          buyer_handle: '@tiktok_buyer_skb',
+                          buyer_name: 'Kak Dinda Sukabumi',
+                          buyer_phone: '081288997711',
+                          shipping_city: 'Kota Sukabumi',
+                          sold_price: onStageItem.target_live_price,
+                        }),
+                      });
+                      if (res.ok) {
+                        store.markItemSold({
+                          itemId: onStageItem.id,
+                          liveSessionId: selectedSessionId,
+                          buyerHandle: '@tiktok_buyer_skb',
+                          soldPrice: onStageItem.target_live_price,
+                          buyerName: 'Kak Dinda Sukabumi',
+                          buyerPhone: '0812-8899-7711',
+                        });
+                        sound.playSoldCheer();
+                        confetti({ particleCount: 50 });
+                        showToast(`WEBHOOK SUKSES: ${onStageItem.title} terbeli otomatis via TikTok Shop!`);
+                      }
+                    } catch {
+                      alert('Gagal mensimulasikan webhook.');
+                    }
+                  }}
+                  className="w-full py-2.5 rounded-xl text-xs font-semibold bg-espresso-900 hover:bg-espresso-800 disabled:opacity-40 text-linen-100 transition flex items-center justify-center gap-1.5 shadow-xs"
+                >
+                  <Zap className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Simulasi Order TikTok Live ({onStageItem ? onStageItem.sku : 'Pilih Baju'})</span>
+                </button>
               </div>
             </div>
           </div>

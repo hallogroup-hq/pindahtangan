@@ -183,7 +183,7 @@ describe('REG-WA: WhatsApp Automation & Multi-Event Dispatch Engine', () => {
       const initialLogCount = store.getWhatsAppLogs().length;
 
       const order = store.getData().orders.find(
-        (o) => o.shipping_status === 'verified_packed' || o.shipping_status === 'pending_pack' || o.shipping_status === 'pending'
+        (o) => o.shipping_status === 'pending_pack'
       );
       if (order) {
         store.bulkDispatchOrders([order.id], 'SiCepat BEST');

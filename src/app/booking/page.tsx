@@ -12,6 +12,7 @@ function BookingFormContent() {
   const searchParams = useSearchParams();
   const { store, setActiveUser } = useStore();
 
+  const refParam = searchParams.get('ref') || '';
   const initialCount = searchParams.get('count') ? Number(searchParams.get('count')) : 25;
 
   const [formData, setFormData] = useState({
@@ -23,6 +24,7 @@ function BookingFormContent() {
     pickupSlot: 'pagi',
     estimatedCount: initialCount,
     notes: '',
+    referralCode: refParam,
   });
 
   const [successBatch, setSuccessBatch] = useState<{
@@ -45,6 +47,7 @@ function BookingFormContent() {
       pickupDate: formData.pickupDate,
       estimatedCount: formData.estimatedCount,
       notes: formData.notes,
+      referralCode: formData.referralCode,
     });
 
     setActiveUser(consignor.id);
@@ -74,6 +77,20 @@ function BookingFormContent() {
                 Kurir internal PindahTangan akan datang membawa kantong khusus ke alamatmu di Kota Sukabumi.
               </p>
             </div>
+
+            {formData.referralCode && (
+              <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-between text-xs text-emerald-950 animate-fade-in">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>
+                    Undangan Komunitas Aktif: Kode Referral <strong>{formData.referralCode}</strong>
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full">
+                  Bonus Tetangga Rp 10k
+                </span>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

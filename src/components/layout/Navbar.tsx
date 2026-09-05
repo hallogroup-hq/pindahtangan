@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/useStore';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, User } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { data } = useStore();
+  const { data, activeUser } = useStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const liveQueueCount = data.items.filter(
@@ -69,14 +69,32 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Primary Action Button */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Primary Action Button & User Profile */}
+          <div className="hidden md:flex items-center gap-3">
             <Link
               href="/booking"
-              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-6 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
+              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
             >
               <span>Jemput Lemari</span>
               <ArrowUpRight className="w-3.5 h-3.5 opacity-80" />
+            </Link>
+
+            <Link
+              href="/login"
+              className="flex items-center gap-2 p-1 pl-2.5 pr-1 rounded-full border border-linen-300 hover:border-espresso-700 bg-linen-100/60 hover:bg-linen-200/60 transition-all text-left group"
+              title="Ganti Akun / Masuk Pengguna"
+            >
+              <div className="text-right leading-none hidden lg:block">
+                <span className="text-[10px] font-medium text-espresso-900 block group-hover:text-terracotta-700 truncate max-w-[100px]">
+                  {activeUser?.full_name?.split(' ')[0] || 'Masuk'}
+                </span>
+                <span className="text-[8px] font-mono uppercase tracking-wider text-espresso-500">
+                  {activeUser?.role || 'Guest'}
+                </span>
+              </div>
+              <div className="h-7 w-7 rounded-full bg-espresso-900 text-linen-100 flex items-center justify-center text-xs font-serif font-bold group-hover:bg-terracotta-600 transition-colors">
+                {activeUser?.full_name ? activeUser.full_name[0] : <User className="w-3 h-3" />}
+              </div>
             </Link>
           </div>
 
@@ -118,7 +136,14 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-4">
+          <div className="pt-4 space-y-2">
+            <Link
+              href="/login"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-center border border-linen-300 bg-white text-espresso-800 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider"
+            >
+              Akun: {activeUser?.full_name?.split(' ')[0] || 'Masuk'} ({activeUser?.role || 'Guest'})
+            </Link>
             <Link
               href="/booking"
               onClick={() => setIsOpen(false)}

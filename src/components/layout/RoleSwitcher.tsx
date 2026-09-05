@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/lib/useStore';
 import { RefreshCw, ChevronDown, Check, User } from 'lucide-react';
 
@@ -68,18 +69,27 @@ export default function RoleSwitcher() {
             <span className="text-[10px] uppercase font-mono tracking-widest text-linen-300">
               Pilih Sudut Pandang Pengguna
             </span>
-            <button
-              onClick={() => {
-                if (confirm('Reset seluruh data simulasi ke kondisi awal?')) {
-                  store.resetToDefault();
-                  window.location.reload();
-                }
-              }}
-              title="Reset Data Simulasi"
-              className="text-linen-400 hover:text-white transition p-1"
-            >
-              <RefreshCw className="w-3 h-3" />
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="text-[10px] text-terracotta-400 hover:text-terracotta-300 font-sans transition"
+              >
+                Halaman Login →
+              </Link>
+              <button
+                onClick={() => {
+                  if (confirm('Reset seluruh data simulasi ke kondisi awal?')) {
+                    store.resetToDefault();
+                    window.location.reload();
+                  }
+                }}
+                title="Reset Data Simulasi"
+                className="text-linen-400 hover:text-white transition p-1"
+              >
+                <RefreshCw className="w-3 h-3" />
+              </button>
+            </div>
           </div>
 
           <div className="space-y-1">

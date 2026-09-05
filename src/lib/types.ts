@@ -43,6 +43,9 @@ export interface Profile {
   role: UserRole;
   admin_tier?: AdminTier;
   is_active_staff?: boolean;
+  referral_code?: string;
+  referred_by?: string;
+  referral_bonus_earned?: number;
   created_at: string;
 }
 
@@ -58,6 +61,7 @@ export interface IntakeBatch {
   status: BatchStatus;
   notes?: string;
   district?: string;
+  referral_code?: string;
   created_at: string;
   consignor?: Profile;
 }

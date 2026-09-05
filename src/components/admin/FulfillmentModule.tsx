@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useStore } from '@/lib/useStore';
 import { formatIDR, formatDateIndo } from '@/lib/utils';
 import { Order, ShippingStatus } from '@/lib/types';
+import { sound } from '@/lib/sound';
+import CameraBarcodeScannerModal from './CameraBarcodeScannerModal';
 import {
   ScanLine,
   Printer,
@@ -17,6 +19,7 @@ import {
   ExternalLink,
   Search,
   Filter,
+  Camera,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -32,6 +35,7 @@ export default function FulfillmentModule() {
     status: 'idle' | 'matched' | 'mismatched';
     message: string;
   }>({ status: 'idle', message: '' });
+  const [isCameraScannerOpen, setIsCameraScannerOpen] = useState(false);
 
   // Shipping Label Modal
   const [labelOrder, setLabelOrder] = useState<Order | null>(null);
@@ -50,13 +54,15 @@ export default function FulfillmentModule() {
   const activeOrder = data.orders.find((o) => o.id === selectedOrderId) || data.orders[0];
   const activeOrderItem = data.items.find((i) => i.order_id === activeOrder?.id);
 
-  // Handle Scan Verification
-  const handleVerifyScan = (e?: React.FormEvent) => {
+  // Handle Scan Verification with Audio Feedback
+  const handleVerifyScan = (e?: React.FormEvent, customSku?: string) => {
     if (e) e.preventDefault();
-    if (!activeOrder || !skuScanInput) return;
+    const skuToVerify = customSku || skuScanInput;
+    if (!activeOrder || !skuToVerify) return;
 
-    const result = store.verifyPackingBarcode(activeOrder.id, skuScanInput);
+    const result = store.verifyPackingBarcode(activeOrder.id, skuToVerify);
     if (result.matched) {
+      sound.playSuccessBeep();
       setScanResult({
         status: 'matched',
         message: result.message,
@@ -66,8 +72,9 @@ export default function FulfillmentModule() {
         spread: 50,
         origin: { y: 0.6 },
       });
-      showToast(`SKU ${skuScanInput} cocok! Paket siap ditempel label resi.`);
+      showToast(`SKU ${skuToVerify} cocok! Paket siap ditempel label resi.`);
     } else {
+      sound.playErrorBuzzer();
       setScanResult({
         status: 'mismatched',
         message: result.message,
@@ -312,12 +319,23 @@ export default function FulfillmentModule() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="w-full py-3 rounded-xl bg-espresso-900 text-linen-100 text-xs font-medium uppercase tracking-wider hover:bg-espresso-800 transition"
-              >
-                Verifikasi Barcode Sekarang
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-espresso-900 text-linen-100 text-xs font-medium uppercase tracking-wider hover:bg-espresso-800 transition flex items-center justify-center gap-1.5"
+                >
+                  <ScanLine className="w-4 h-4 text-amber-300" />
+                  <span>Verifikasi Barcode</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCameraScannerOpen(true)}
+                  className="w-full py-3 rounded-xl bg-terracotta-700 hover:bg-terracotta-600 text-white text-xs font-medium uppercase tracking-wider transition shadow-xs flex items-center justify-center gap-1.5"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>Scan Kamera HP</span>
+                </button>
+              </div>
             </form>
 
             {/* Scan Feedback Banner */}
@@ -786,6 +804,17 @@ export default function FulfillmentModule() {
           </div>
         </div>
       )}
+
+      {/* Mobile Camera Barcode Scanner Modal */}
+      <CameraBarcodeScannerModal
+        isOpen={isCameraScannerOpen}
+        onClose={() => setIsCameraScannerOpen(false)}
+        expectedSku={activeOrderItem?.sku}
+        onScanSuccess={(code) => {
+          setSkuScanInput(code);
+          handleVerifyScan(undefined, code);
+        }}
+      />
     </div>
   );
 }

@@ -55,6 +55,8 @@ export const SEED_PROFILES: Profile[] = [
     bank_account_number: '0281928471',
     bank_account_holder: 'Ratna Dewi',
     role: 'consignor',
+    referral_code: 'RATNA-SKB',
+    referral_bonus_earned: 20000,
     created_at: '2026-08-20T08:00:00Z',
   },
   {
@@ -656,6 +658,34 @@ export class PindahTanganStore {
     this.save();
   }
 
+  public createOrGetProfile(params: {
+    fullName: string;
+    phoneNumber: string;
+    role?: UserRole;
+  }): Profile {
+    const cleanPhone = params.phoneNumber.replace(/\D/g, '');
+    let profile = this.data.profiles.find(
+      (p) => p.phone_number.replace(/\D/g, '') === cleanPhone
+    );
+
+    if (!profile) {
+      const initials = params.fullName.split(' ')[0].toUpperCase().replace(/[^A-Z]/g, '') || 'PENITIP';
+      profile = {
+        id: `user-${Date.now()}`,
+        full_name: params.fullName,
+        phone_number: params.phoneNumber,
+        city: 'Kota Sukabumi',
+        role: params.role || 'consignor',
+        referral_code: `${initials}-${Math.floor(10 + Math.random() * 90)}`,
+        created_at: new Date().toISOString(),
+      };
+      this.data.profiles.push(profile);
+      this.save();
+    }
+
+    return profile;
+  }
+
   // RBAC Admin Tier
   public getCurrentAdminTier(): AdminTier {
     return this.data.currentAdminTier || 'superadmin';
@@ -724,6 +754,7 @@ export class PindahTanganStore {
     pickupDate: string;
     estimatedCount: number;
     notes?: string;
+    referralCode?: string;
   }): { batch: IntakeBatch; consignor: Profile } {
     let consignor = this.data.profiles.find(
       (p) => p.phone_number.replace(/\D/g, '') === params.phoneNumber.replace(/\D/g, '')
@@ -737,9 +768,24 @@ export class PindahTanganStore {
         address: `${params.pickupAddress}, ${params.district}`,
         city: 'Kota Sukabumi',
         role: 'consignor',
+        referral_code: `${params.consignorName.split(' ')[0].toUpperCase().replace(/[^A-Z]/g, '') || 'LEMARI'}-${Math.floor(10 + Math.random() * 90)}`,
         created_at: new Date().toISOString(),
       };
       this.data.profiles.push(consignor);
+    } else if (!consignor.referral_code) {
+      consignor.referral_code = `${consignor.full_name.split(' ')[0].toUpperCase().replace(/[^A-Z]/g, '') || 'LEMARI'}-${Math.floor(10 + Math.random() * 90)}`;
+    }
+
+    // Process Referral Award (Bonus Rp 10.000 untuk tetangga yang mereferensikan)
+    if (params.referralCode) {
+      const cleanRef = params.referralCode.trim().toUpperCase();
+      const referrer = this.data.profiles.find(
+        (p) => p.referral_code?.toUpperCase() === cleanRef
+      );
+      if (referrer && referrer.id !== consignor.id) {
+        consignor.referred_by = referrer.id;
+        referrer.referral_bonus_earned = (referrer.referral_bonus_earned || 0) + 10000;
+      }
     }
 
     const newBatch: IntakeBatch = {
@@ -753,6 +799,7 @@ export class PindahTanganStore {
       actual_count: 0,
       status: 'scheduled',
       notes: params.notes,
+      referral_code: params.referralCode?.trim().toUpperCase(),
       created_at: new Date().toISOString(),
     };
 
