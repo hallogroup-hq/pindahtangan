@@ -30,9 +30,28 @@ export default function Navbar() {
     (i) => i.status === 'in_live_queue' || i.status === 'ready_for_live'
   ).length;
 
-  const navLinks = [
+  type NavLink = {
+    href: string;
+    label: string;
+    tag?: string;
+  };
+
+  // Public nav links - only customer-facing routes
+  const publicNavLinks: NavLink[] = [
+    { href: '/', label: 'Beranda' },
+    { href: '/booking', label: 'Jemput Lemari' },
+  ];
+
+  // Authenticated user nav links - includes portal but hides staff routes from non-staff
+  const userNavLinks: NavLink[] = [
     { href: '/', label: 'Beranda' },
     { href: '/portal', label: 'Lemari Saya' },
+    { href: '/booking', label: 'Titip Lagi' },
+  ];
+
+  // Staff-only routes - only shown when user has staff role and is logged in
+  const isStaff = activeUser?.role === 'admin' || activeUser?.role === 'host';
+  const staffNavLinks: NavLink[] = isLoggedIn && isStaff ? [
     { href: '/studio', label: 'Studio QC' },
     {
       href: '/host',
@@ -40,7 +59,7 @@ export default function Navbar() {
       tag: liveQueueCount > 0 ? `${liveQueueCount}` : undefined,
     },
     { href: '/admin', label: 'Backoffice' },
-  ];
+  ] : [];
 
   const handleLogout = () => {
     sound.playCountdownTick();
@@ -78,7 +97,7 @@ export default function Navbar() {
 
           {/* Navigation Links (Desktop) */}
           <nav className="hidden md:flex space-x-8">
-            {navLinks.map((item) => {
+            {(!isLoggedIn ? publicNavLinks : [...userNavLinks, ...staffNavLinks]).map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -108,13 +127,13 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/booking"
-              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
+              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
             >
-              <span>Jemput Lemari</span>
-              <ArrowUpRight className="w-3.5 h-3.5 opacity-80" />
+               <span>Tanya soal pilot</span>
+               <ArrowUpRight className="w-3.5 h-3.5 opacity-80" />
             </Link>
 
-            {/* Authenticated User Menu or Sign In Button */}
+             {/* Authenticated User Menu or Sign In Button */}
             {isLoggedIn ? (
               <div className="relative">
                 <button
@@ -262,7 +281,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {navLinks.map((item) => {
+          {(!isLoggedIn ? publicNavLinks : [...userNavLinks, ...staffNavLinks]).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

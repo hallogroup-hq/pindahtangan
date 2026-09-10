@@ -37,63 +37,73 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Quick Access */}
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold block mb-4">
-              Navigasi Platform
-            </span>
-            <ul className="text-xs text-stone-400 space-y-2.5">
-              <li>
-                <Link href="/booking" className="hover:text-white transition">
-                  Jadwal Penjemputan Lemari
-                </Link>
-              </li>
-              <li>
-                <Link href="/portal" className="hover:text-white transition">
-                  Lemari Konsinyasi Saya
-                </Link>
-              </li>
-              <li>
-                <Link href="/studio" className="hover:text-white transition">
-                  Studio QC &amp; Cuci Uap
-                </Link>
-              </li>
-              <li>
-                <Link href="/host" className="hover:text-white transition">
-                  Live Host Tablet Controller
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="hover:text-white transition">
-                  Backoffice &amp; Payout Jumat
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* Quick Access - Public routes only */}
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold block mb-4">
+                        Navigasi Platform
+                      </span>
+                      <ul className="text-xs text-stone-400 space-y-2.5">
+                        <li>
+                          <Link href="/booking" className="hover:text-white transition">
+                            Jadwal Penjemputan Lemari
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/portal" className="hover:text-white transition">
+                            Lemari Konsinyasi Saya
+                          </Link>
+                        </li>
+                        <li>
+                          <a
+                            href="/pindahtangan-pitch-deck.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-amber-300/90 hover:text-amber-200 transition font-medium flex items-center gap-1.5"
+                          >
+                            <span>📄 Unduh Pitch Deck (PDF)</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
 
-          {/* Studio Hub */}
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold block mb-4">
-              Studio &amp; Siaran Live
-            </span>
-            <div className="text-xs text-stone-400 space-y-3 leading-relaxed">
-              <p>
-                <strong>Studio PindahTangan Hub:</strong>
-                <br />
-                Jl. Siliwangi No. 102, Cikole, Kota Sukabumi
-              </p>
-              <p>
-                <strong>Jadwal Siaran Live TikTok:</strong>
-                <br />
-                • Sore (Tier B): 16.00 – 18.00 WIB
-                <br />
-                • Malam (Tier A): 20.00 – 22.00 WIB
-              </p>
-              <p className="text-[11px] text-stone-500">
-                Pencairan otomatis ke rekening bank setiap Jumat sore pukul 16.00 WIB.
-              </p>
-            </div>
-          </div>
+                    {/* Staff-only routes (hidden from public footer, accessible via direct nav or Navbar when authenticated) */}
+                    <div className="hidden" aria-hidden="true">
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold block mb-4">
+                        Internal Staff Routes (Hidden from Public)
+                      </span>
+                      <ul className="text-xs text-stone-500 space-y-2.5">
+                        <li>
+                          <Link href="/studio" className="hover:text-stone-400 transition">
+                            Studio QC & Cuci Uap
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/host" className="hover:text-stone-400 transition">
+                            Live Host Tablet Controller
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/admin" className="hover:text-stone-400 transition">
+                            Backoffice & Payout Jumat
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+
+          {/* Studio Hub - Removed unsupported operational claims per audit */}
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-stone-400 font-semibold block mb-4">
+                        Studio & Siaran Live
+                      </span>
+                      <div className="text-xs text-stone-400 space-y-3 leading-relaxed">
+                        <p className="text-stone-500">
+                          Detail operasional studio dan jadwal siaran akan dikonfirmasi saat pilot dibuka.
+                        </p>
+                        <p className="text-[11px] text-stone-500">
+                          Pencairan dana dan jadwal transfer sedang divalidasi melalui pilot.
+                        </p>
+                      </div>
+                    </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500 font-mono">

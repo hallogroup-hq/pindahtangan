@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>PindahTangan — Pitch Deck & Sistem Platform</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0f0d0b;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1c1917;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      width: 16in;
+      height: 9in;
+      page-break-after: always;
+      break-after: page;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.65in 0.85in;
+    }
+
+    /* THEMES */
+    .theme-dark {
+      background: #141210;
+      color: #f7f4ee;
+    }
+
+    .theme-light {
+      background: #faf7f2;
+      color: #1f1a16;
+    }
+
+    .theme-terracotta {
+      background: #7c2d12;
+      color: #fffaf5;
+    }
+
+    /* TYPOGRAPHY */
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .font-sans {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* HEADER BARS */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: 0.22in;
+    }
+
+    .theme-dark .slide-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .header-tag {
+      font-size: 11pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-light .header-tag { color: #9a3412; }
+    .theme-dark .header-tag { color: #f59e0b; }
+
+    .header-number {
+      font-size: 11pt;
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0.6;
+      letter-spacing: 0.1em;
+    }
+
+    /* FOOTER BARS */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      padding-top: 0.2in;
+      font-size: 10pt;
+      opacity: 0.7;
+    }
+
+    .theme-dark .slide-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* CONTENT LAYOUT */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0.3in 0;
+    }
+
+    /* PILLS & BADGES */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 10pt;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pill-terracotta {
+      background: rgba(194, 65, 12, 0.15);
+      color: #c2410c;
+      border: 1px solid rgba(194, 65, 12, 0.3);
+    }
+
+    .pill-emerald {
+      background: rgba(4, 120, 87, 0.15);
+      color: #047857;
+      border: 1px solid rgba(4, 120, 87, 0.3);
+    }
+
+    .pill-amber {
+      background: rgba(217, 119, 6, 0.15);
+      color: #d97706;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+    }
+
+    .pill-gold-dark {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    /* GRIDS & CARDS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35in;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.3in;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0.25in;
+    }
+
+    .card {
+      border-radius: 18px;
+      padding: 0.28in 0.32in;
+      background: #ffffff;
+      border: 1px solid #e7e0d4;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .theme-dark .card {
+      background: #1c1815;
+      border: 1px solid #2e2823;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-accent {
+      border-left: 5px solid #c2410c;
+    }
+
+    .card-accent-emerald {
+      border-left: 5px solid #047857;
+    }
+
+    .card-accent-amber {
+      border-left: 5px solid #d97706;
+    }
+
+    /* STEP BOXES */
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13pt;
+      margin-bottom: 12px;
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 34pt;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 11pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.75;
+    }
+
+    /* TABLE */
+    table.comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5pt;
+    }
+
+    table.comp-table th {
+      text-align: left;
+      padding: 14px 18px;
+      background: #eee8dc;
+      color: #1c1917;
+      font-weight: 700;
+      border-bottom: 2px solid #d6cdbe;
+    }
+
+    table.comp-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #e8e2d5;
+      vertical-align: middle;
+    }
+
+    table.comp-table tr.highlight {
+      background: #fff8f0;
+      font-weight: 600;
+    }
+
+    table.comp-table tr.highlight td:first-child {
+      border-left: 4px solid #c2410c;
+      color: #9a3412;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 1: COVER / TITLE SLIDE (Dark Editorial Luxury)     -->
+  <!-- ======================================================== -->
+  <section class="slide theme-dark" id="slide-1">
+    <div class="slide-header">
+      <div class="header-tag" style="color: #e0a96d;">
+        <span>🌿</span>
+        <span>PITCH DECK &amp; BUSINESS OVERVIEW</span>
+      </div>
+      <div class="header-number">KONSINYASI FESYEN SIRKULAR</div>
+    </div>
+
+    <div class="slide-body" style="align-items: flex-start; justify-content: center; max-width: 12.5in;">
+      <div class="pill pill-gold-dark" style="margin-bottom: 0.25in;">
+        <span>KOTA SUKABUMI PILOT • INDONESIA 2026</span>
+      </div>
+      
+      <h1 class="font-serif" style="font-size: 64pt; line-height: 1.08; font-weight: 400; margin: 0 0 0.2in 0; letter-spacing: -0.02em;">
+        Pindah<span style="font-style: italic; color: #ea580c; font-weight: 400;">Tangan</span>
+      </h1>
+
+      <p class="font-sans" style="font-size: 23pt; line-height: 1.35; color: #e5dfd5; max-width: 11.5in; font-weight: 300; margin: 0 0 0.35in 0;">
+        Revolusi Fesyen Sirkular Terkurasi Kota Tier-2/3: <strong style="color: #ffffff; font-weight: 600;">Jemput Lemari Gratis</strong>, <strong style="color: #ffffff; font-weight: 600;">Cuci Uap Panas &gt;100°C</strong>, dan Penjualan Cepat Berbasis <strong style="color: #ea580c; font-weight: 600;">TikTok Live Commerce</strong>.
+      </p>
+
+      <div style="display: flex; gap: 0.4in; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.25in; width: 100%;">
+        <div>
+          <div class="stat-label" style="color: #e0a96d; font-size: 9.5pt;">OPERATIONAL HUB</div>
+          <div style="font-size: 13pt; font-weight: 600; color: #f5f2eb; margin-top: 2px;">Studio Hub Siliwangi 102, Sukabumi</div>
+        </div>
+        <div>
+          <div class="stat-label" style="color: #e0a96d; font-size: 9.5pt;">LIVE PLATFORM</div>
+          <div style="font-size: 13pt; font-weight: 600; color: #f5f2eb; margin-top: 2px;">TikTok Live &amp; Web Platform Terpadu</div>
+        </div>
+        <div>
+          <div class="stat-label" style="color: #e0a96d; font-size: 9.5pt;">PAYOUT CADENCE</div>
+          <div style="font-size: 13pt; font-weight: 600; color: #f5f2eb; margin-top: 2px;">Rutin Setiap Jumat Pukul 16.00 WIB</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Inc. • Confidential Presentation</span>
+      <span>https://pindahtangan-zeta.vercel.app</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 2: PROBLEM STATEMENT (Light Chic)                   -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-2">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>01 / LATAR BELAKANG MASALAH</span>
+      </div>
+      <div class="header-number">PROBLEM &amp; MARKET PAIN</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.25in;">
+        <h2 class="font-serif" style="font-size: 34pt; font-weight: 600; margin: 0 0 6px 0; letter-spacing: -0.01em;">
+          Lemari Penuh Sesak, Namun Uang Berhenti Mengalir
+        </h2>
+        <p style="font-size: 14pt; color: #574f46; margin: 0; line-height: 1.4;">
+          Di kota tier-2 seperti Sukabumi, jutaan pakaian wanita layak pakai mengendap tanpa solusi monetisasi yang mudah dan terpercaya.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card card-accent">
+          <div style="font-size: 26pt; margin-bottom: 8px;">👗</div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #7c2d12;">Penitip: Beban &amp; Repot Tinggi</h3>
+          <p style="font-size: 11.5pt; line-height: 1.55; color: #574f46; margin: 0;">
+            Menjual baju preloved sendiri sangat melelahkan: harus setrika, memotret satu per satu, upload ke medsos, melayani chat tawar-menawar sadis, mengemas, dan mengantar ke kurir. <strong>90% orang akhirnya membiarkan baju menumpuk.</strong>
+          </p>
+        </div>
+
+        <div class="card card-accent-amber">
+          <div style="font-size: 26pt; margin-bottom: 8px;">🏷️</div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #b45309;">Pembeli: Ragu &amp; Tidak Higienis</h3>
+          <p style="font-size: 11.5pt; line-height: 1.55; color: #574f46; margin: 0;">
+            Thrifting online di medsos penuh ketidakpastian: pakaian sering berbau apek, noda tersembunyi, ukuran tidak akurat, dan tidak higienis. Pembeli menginginkan pakaian bekas berstandar retail yang siap langsung dikenakan.
+          </p>
+        </div>
+
+        <div class="card card-accent-emerald">
+          <div style="font-size: 26pt; margin-bottom: 8px;">⏳</div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #065f46;">Pasar: Ketiadaan Konsinyasi Tier-2</h3>
+          <p style="font-size: 11.5pt; line-height: 1.55; color: #574f46; margin: 0;">
+            Platform fesyen konsinyasi modern saat ini hanya melayani kota metropolitan dengan fee tinggi (hingga 50%). Kota sub-urban dengan populasi padat seperti Sukabumi terabaikan, padahal daya beli pakaian terkurasi sangat tinggi.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top: 0.25in; background: #f0eae1; padding: 14px 22px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 11.5pt; font-weight: 600; color: #443c35;">
+          💡 Validasi Lapangan di Sukabumi: Rata-rata ibu rumah tangga menyimpan 40-70 helai pakaian menganggur di lemari.
+        </span>
+        <span class="pill pill-terracotta" style="font-size: 9pt;">POTENSI LOKAL: &gt;500.000 HELAI</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 02</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 3: THE SOLUTION (Dark Warm Luxury)                  -->
+  <!-- ======================================================== -->
+  <section class="slide theme-dark" id="slide-3">
+    <div class="slide-header">
+      <div class="header-tag" style="color: #ea580c;">
+        <span>02 / SOLUSI PINDAHTANGAN</span>
+      </div>
+      <div class="header-number">VALUE PROPOSITION</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.25in;">
+        <h2 class="font-serif" style="font-size: 34pt; font-weight: 400; margin: 0 0 6px 0; color: #fff;">
+          Konsinyasi Fesyen Cepat, Bersih, dan Tanpa Beban
+        </h2>
+        <p style="font-size: 14pt; color: #d6cfc5; margin: 0; line-height: 1.4;">
+          PindahTangan mengambil alih 100% proses repot penitip pakaian, mengubah lemari pasif menjadi aliran kas mingguan.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="border-top: 4px solid #ea580c;">
+          <div style="background: rgba(234, 88, 12, 0.2); color: #ea580c; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18pt; margin-bottom: 14px;">
+            🚚
+          </div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #fdfbf7;">1. Zero-Effort Consignment</h3>
+          <p style="font-size: 11pt; line-height: 1.55; color: #b5ada2; margin: 0;">
+            Penitip cukup pesan via web. Kurir internal PindahTangan menjemput kantong pakaian langsung ke depan rumah secara <strong>gratis (min. 20 pcs)</strong>. Penitip tidak perlu memotret, setrika, atau chat pembeli.
+          </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #10b981;">
+          <div style="background: rgba(16, 185, 129, 0.2); color: #10b981; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18pt; margin-bottom: 14px;">
+            💨
+          </div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #fdfbf7;">2. QC 5 Parameter &amp; Cuci Uap</h3>
+          <p style="font-size: 11pt; line-height: 1.55; color: #b5ada2; margin: 0;">
+            Setiap helai pakaian melalui screening cacat 5 parameter (noda, lubang, kancing, resleting, aroma) dan <strong>sterilisasi uap suhu tinggi &gt;100°C</strong>. Pakaian harum, rapi, dan siap tayang.
+          </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+          <div style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18pt; margin-bottom: 14px;">
+            🎙️
+          </div>
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 8px 0; color: #fdfbf7;">3. TikTok Live &amp; Gajian Jumat</h3>
+          <p style="font-size: 11pt; line-height: 1.55; color: #b5ada2; margin: 0;">
+            Pakaian disiarkan oleh talent live studio di TikTok Shop secara interaktif. Begitu terjual, dana masuk saldo escrow dan <strong>ditransfer otomatis ke rekening bank penitip setiap Jumat pukul 16.00 WIB</strong>.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top: 0.25in;">
+        <div style="background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+          <span style="font-size: 10pt; color: #e0a96d; font-weight: 600;">JAMINAN PENITIP</span>
+          <div style="font-size: 11pt; color: #fff; margin-top: 2px;">Floor Price Dilindungi (Harga Minimal Tetap)</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+          <span style="font-size: 10pt; color: #10b981; font-weight: 600;">BIAYA DEDUKTIF</span>
+          <div style="font-size: 11pt; color: #fff; margin-top: 2px;">Cuci Uap Rp 2.500/pcs Hanya Dipotong Saat Laku</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+          <span style="font-size: 10pt; color: #f59e0b; font-weight: 600;">TRANSPARANSI PENUH</span>
+          <div style="font-size: 11pt; color: #fff; margin-top: 2px;">Laporan WhatsApp Bot Real-Time &amp; Portal Akun</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 03</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 4: END-TO-END OPERATIONAL SYSTEM (Light)           -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-4">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>03 / SISTEM OPERASIONAL LENGKAP</span>
+      </div>
+      <div class="header-number">END-TO-END WORKFLOW</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.2in;">
+        <h2 class="font-serif" style="font-size: 30pt; font-weight: 600; margin: 0 0 4px 0;">
+          Alur 6 Langkah: Dari Lemari Hingga Saldo Rekening Bank
+        </h2>
+        <p style="font-size: 13pt; color: #574f46; margin: 0;">
+          Arsitektur operasional terstandardisasi dengan efisiensi tinggi dan verifikasi zero-error.
+        </p>
+      </div>
+
+      <div class="grid-3" style="gap: 0.22in;">
+        <!-- Step 1 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #fed7aa; color: #9a3412;">1</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">Booking &amp; Jemput</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Penitip mendaftar di web, memilih kecamatan Sukabumi. Kurir internal menjemput kantong pakaian bersegel secara terjadwal.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #fef08a; color: #854d0e;">2</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">QC 5-Parameter</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Pemeriksaan noda, robek, kelengkapan kancing, resleting, dan bau. Barang ditolak dapat diambil kembali atau didonasikan.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #bbf7d0; color: #166534;">3</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">Uap &amp; Barcode SKU</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Sterilisasi cuci uap panas &gt;100°C. Sistem otomatis menerbitkan hangtag barcode unik (misal #001) dan menetapkan floor price.
+          </p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #fed7aa; color: #9a3412;">4</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">TikTok Live Streaming</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Host menyiarkan 50 gantungan per shift. Co-Pilot telemetri menghitung mundur 30 detik lot. Baju terjual memicu notifikasi real-time.
+          </p>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #ddd6fe; color: #5b21b6;">5</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">Fulfillment Scanner</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Staf packing memindai barcode hangtag &amp; resi thermal AWB dengan kamera HP (WebRTC zero-error). Pakaian langsung dikirim via 3PL.
+          </p>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="card" style="padding: 16px 20px;">
+          <div class="step-num" style="background: #bbf7d0; color: #166534;">6</div>
+          <h4 class="font-serif" style="font-size: 14pt; margin: 0 0 4px 0;">Gajian Jumat 16.00 WIB</h4>
+          <p style="font-size: 10.5pt; color: #574f46; line-height: 1.45; margin: 0;">
+            Dana escrow ditransfer massal ke rekening bank (BCA/Mandiri/BRI) atau e-wallet penitip lengkap dengan slip rincian via WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top: 0.2in; background: #e8e2d5; border-radius: 12px; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11pt; font-weight: 600; color: #292524;">
+          ⚡ Rata-rata perputaran inventaris pakaian sejak dijemput hingga terjual dan dicairkan: <strong>7 – 12 Hari</strong>.
+        </span>
+        <span class="pill pill-emerald" style="font-size: 8.5pt;">ZERO INVENTORY RISK</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 04</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 5: TECH & PRODUCT ECOSYSTEM (Dark)                 -->
+  <!-- ======================================================== -->
+  <section class="slide theme-dark" id="slide-5">
+    <div class="slide-header">
+      <div class="header-tag" style="color: #60a5fa;">
+        <span>04 / EKOSISTEM TEKNOLOGI &amp; PRODUK</span>
+      </div>
+      <div class="header-number">PLATFORM CAPABILITIES</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 400; margin: 0 0 6px 0; color: #fff;">
+          Teknologi Khusus untuk Operasional Fesyen Cepat
+        </h2>
+        <p style="font-size: 13.5pt; color: #d6cfc5; margin: 0;">
+          Aplikasi terintegrasi dari portal pemilik pakaian, stasiun studio, hingga otomasi gudang pintar.
+        </p>
+      </div>
+
+      <div class="grid-2" style="gap: 0.3in;">
+        <!-- Left Column -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="pill pill-terracotta" style="margin-bottom: 10px; font-size: 8.5pt;">USER FACING</div>
+            <h3 class="font-serif" style="font-size: 17pt; margin: 0 0 6px 0; color: #fff;">Portal Penitip &amp; Program Referral</h3>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10.5pt; line-height: 1.6; color: #c4bbb0;">
+              <li><strong>Self-Service Registration:</strong> Pendaftaran akun mandiri dengan verifikasi email/WhatsApp &amp; no. rekening bank.</li>
+              <li><strong>Live Closet Tracker:</strong> Memantau posisi baju (Di jemput, Cuci uap, Siap live, Terjual, Payout selesai).</li>
+              <li><strong>Escrow Saldo &amp; Slip:</strong> Visibilitas saldo yang akan cair setiap hari Jumat pukul 16.00 WIB.</li>
+              <li><strong>Referral Mesin Cuan:</strong> Bonus Rp 10.000 otomatis untuk setiap tetangga yang menitipkan pakaian.</li>
+            </ul>
+          </div>
+          <div style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 9.5pt; color: #ea580c; background: rgba(234,88,12,0.1); padding: 8px 12px; border-radius: 8px;">
+            URL: https://pindahtangan-zeta.vercel.app/portal
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="pill pill-emerald" style="margin-bottom: 10px; font-size: 8.5pt;">STUDIO &amp; WAREHOUSE OPS</div>
+            <h3 class="font-serif" style="font-size: 17pt; margin: 0 0 6px 0; color: #fff;">Co-Pilot Live &amp; Barcode WebRTC Scanner</h3>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10.5pt; line-height: 1.6; color: #c4bbb0;">
+              <li><strong>Host Co-Pilot &amp; Soundboard:</strong> Telemetri gantungan, timer 30 detik lot, dan efek audio Web Audio offline.</li>
+              <li><strong>Kamera HP Barcode Scanner:</strong> Deteksi barcode 1D/QR menggunakan kamera smartphone staf tanpa beli alat mahal.</li>
+              <li><strong>TikTok Live Webhook API:</strong> Ingesti pesanan real-time dari checkout live streaming dan sinkronisasi stok otomatis.</li>
+              <li><strong>Dual Cloud Architecture:</strong> Local reactive data store + Supabase Cloud PostgreSQL Sync real-time.</li>
+            </ul>
+          </div>
+          <div style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 9.5pt; color: #10b981; background: rgba(16,185,129,0.1); padding: 8px 12px; border-radius: 8px;">
+            Tech Stack: Next.js 14 App Router, WebRTC, Web Audio API, Supabase
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Bar -->
+      <div style="margin-top: 0.22in; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 24px; display: flex; justify-content: space-around; align-items: center; font-size: 10.5pt; color: #d6cfc5;">
+        <span>📱 WhatsApp Bot Otomatis</span>
+        <span style="opacity: 0.3;">•</span>
+        <span>🛡️ 4-Tier Role Based Access Control</span>
+        <span style="opacity: 0.3;">•</span>
+        <span>🏷️ Thermal AWB 10x15 Generator</span>
+        <span style="opacity: 0.3;">•</span>
+        <span>📊 Unit Economics Calculator</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 05</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 6: TIERING & PRICING MATRIX (Light)                -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-6">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>05 / STRATEGI PENETAPAN HARGA</span>
+      </div>
+      <div class="header-number">TIERING &amp; PRICING MATRIX</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 600; margin: 0 0 6px 0;">
+          Klasifikasi 3-Tier untuk Penetrasi Pasar Optimal
+        </h2>
+        <p style="font-size: 13.5pt; color: #574f46; margin: 0;">
+          Struktur harga melindungi floor price penitip sekaligus menjaga daya tarik penonton live TikTok.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Tier A -->
+        <div class="card card-accent" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-terracotta" style="margin-bottom: 8px;">TIER A • BRANDED &amp; PESTA</span>
+            <h3 class="font-serif" style="font-size: 19pt; margin: 0 0 8px 0; color: #1c1917;">Zara, Mango, Uniqlo, Gamis Pesta</h3>
+            <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0 0 16px 0;">
+              Gaun pesta brokat, outer rajut premium, jaket branded, dan setelan formal berlabel ternama.
+            </p>
+            <div style="border-top: 1px dashed #d6cdbe; padding-top: 12px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Floor Price Penitip:</span>
+                <strong style="color: #1c1917;">Rp 50.000 – Rp 120.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Target Buka Live:</span>
+                <strong style="color: #c2410c;">Rp 85.000 – Rp 150.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11pt;">
+                <span style="color: #666;">Potensi Spread:</span>
+                <strong style="color: #047857;">Rp 30.000 – Rp 40.000 / pcs</strong>
+              </div>
+            </div>
+          </div>
+          <div style="background: #fdf2e9; padding: 8px 12px; border-radius: 8px; font-size: 9.5pt; font-weight: 600; color: #9a3412;">
+            Siaran: Weekend &amp; Prime Time Malam (20.00–22.00)
+          </div>
+        </div>
+
+        <!-- Tier B -->
+        <div class="card card-accent-amber" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-amber" style="margin-bottom: 8px;">TIER B • CASUAL &amp; KERJA</span>
+            <h3 class="font-serif" style="font-size: 19pt; margin: 0 0 8px 0; color: #1c1917;">Kemeja, Blouse, Kulot Linen</h3>
+            <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0 0 16px 0;">
+              Pakaian harian wanita kantoran, kemeja katun, tunik kasual, dan celana kulot santai.
+            </p>
+            <div style="border-top: 1px dashed #d6cdbe; padding-top: 12px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Floor Price Penitip:</span>
+                <strong style="color: #1c1917;">Rp 25.000 – Rp 45.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Target Buka Live:</span>
+                <strong style="color: #c2410c;">Rp 45.000 – Rp 59.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11pt;">
+                <span style="color: #666;">Potensi Spread:</span>
+                <strong style="color: #047857;">Rp 15.000 – Rp 20.000 / pcs</strong>
+              </div>
+            </div>
+          </div>
+          <div style="background: #fef3c7; padding: 8px 12px; border-radius: 8px; font-size: 9.5pt; font-weight: 600; color: #92400e;">
+            Siaran: Harian Sore (16.00–18.00 WIB)
+          </div>
+        </div>
+
+        <!-- Tier C -->
+        <div class="card card-accent-emerald" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-emerald" style="margin-bottom: 8px;">TIER C • BASIC &amp; MASS</span>
+            <h3 class="font-serif" style="font-size: 19pt; margin: 0 0 8px 0; color: #1c1917;">Kaos Polos, Cardigan, Rumahan</h3>
+            <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0 0 16px 0;">
+              Kaos basic katun, cardigan tipis, celana santai rumah, dan obral ceban penarik traffic.
+            </p>
+            <div style="border-top: 1px dashed #d6cdbe; padding-top: 12px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Floor Price Penitip:</span>
+                <strong style="color: #1c1917;">Rp 10.000 – Rp 20.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11pt;">
+                <span style="color: #666;">Target Buka Live:</span>
+                <strong style="color: #c2410c;">Rp 25.000 – Rp 35.000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11pt;">
+                <span style="color: #666;">Potensi Spread:</span>
+                <strong style="color: #047857;">Rp 10.000 – Rp 15.000 / pcs</strong>
+              </div>
+            </div>
+          </div>
+          <div style="background: #d1fae5; padding: 8px 12px; border-radius: 8px; font-size: 9.5pt; font-weight: 600; color: #065f46;">
+            Siaran: Flash Sale Siang (14.00–16.00 WIB)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 06</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 7: BUSINESS MODEL & UNIT ECONOMICS (Light)         -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-7">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>06 / MODEL BISNIS &amp; UNIT ECONOMICS</span>
+      </div>
+      <div class="header-number">FINANCIAL ARCHITECTURE</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 600; margin: 0 0 6px 0;">
+          Unit Economics Kuat: 3 Sumber Cuan dengan Margin Sehat
+        </h2>
+        <p style="font-size: 13.5pt; color: #574f46; margin: 0;">
+          Model konsinyasi murni membebaskan platform dari beban modal inventaris (*zero working capital inventory risk*).
+        </p>
+      </div>
+
+      <div class="grid-2" style="gap: 0.35in;">
+        <!-- Left: Monetization Streams -->
+        <div class="card" style="padding: 24px 28px;">
+          <h3 class="font-serif" style="font-size: 18pt; margin: 0 0 16px 0; color: #1c1917;">3 Mesin Pendapatan Platform</h3>
+          
+          <div style="margin-bottom: 16px; border-left: 3px solid #ea580c; padding-left: 14px;">
+            <strong style="font-size: 12pt; color: #9a3412;">1. Live Spread Margin</strong>
+            <p style="font-size: 10.5pt; color: #574f46; margin: 2px 0 0 0;">
+              Selisih antara harga ketuk palu saat live TikTok dengan floor price yang disepakati penitip. Rata-rata <strong>Rp 15.000 – Rp 35.000 / pcs</strong>.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 16px; border-left: 3px solid #047857; padding-left: 14px;">
+            <strong style="font-size: 12pt; color: #047857;">2. Deduksi Cuci Uap (Higienitas)</strong>
+            <p style="font-size: 10.5pt; color: #574f46; margin: 2px 0 0 0;">
+              Biaya operasional uap panas <strong>Rp 2.500 / pcs</strong> hanya dipotong dari hasil penjualan saat pakaian laku terjual.
+            </p>
+          </div>
+
+          <div style="border-left: 3px solid #d97706; padding-left: 14px;">
+            <strong style="font-size: 12pt; color: #b45309;">3. Beli Putus Stok Lewat 30 Hari (Obral Ceban)</strong>
+            <p style="font-size: 10.5pt; color: #574f46; margin: 2px 0 0 0;">
+              Pakaian yang tidak laku setelah 30 hari dapat dibeli putus platform seharga <strong>Rp 10.000</strong> dan dijual kembali saat mega sale kilat.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Breakdown Simulasi 1 Pcs -->
+        <div class="card" style="background: #1e1b18; color: #fdfbf7; border: none; padding: 24px 28px;">
+          <div class="pill pill-gold-dark" style="margin-bottom: 12px; font-size: 8.5pt;">SIMULASI RIIL PER 1 PCS (TIER B)</div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px; margin-bottom: 10px;">
+            <span style="font-size: 12pt;">Harga Terjual Live TikTok</span>
+            <span class="font-serif" style="font-size: 18pt; color: #fbbf24; font-weight: 700;">Rp 65.000</span>
+          </div>
+
+          <div style="font-size: 10.5pt; color: #d6cfc5; space-y: 6px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>• Floor Price Hak Penitip:</span>
+              <span>- Rp 45.000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>• Deduksi Cuci Uap (diambil platform):</span>
+              <span style="color: #34d399;">+ Rp 2.500</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.1);">
+              <strong style="color: #fff;">Penerimaan Bersih Penitip (Gajian Jumat):</strong>
+              <strong style="color: #fff;">Rp 42.500</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+              <strong style="color: #fbbf24;">Gross Margin Platform:</strong>
+              <strong style="color: #fbbf24;">Rp 22.500</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 9.5pt; color: #a8a29e; margin-top: 4px;">
+              <span>Biaya Ops (Komisi Host Rp 2rb, Kurir Rp 1rb, Hangtag/Listrik Rp 1.5rb):</span>
+              <span>- Rp 4.500</span>
+            </div>
+          </div>
+
+          <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 9pt; color: #34d399; font-weight: 700; text-transform: uppercase;">NET PROFIT PLATFORM / PCS</div>
+              <div class="font-serif" style="font-size: 20pt; color: #fff; font-weight: 700;">Rp 18.000</div>
+            </div>
+            <span class="pill pill-emerald" style="font-size: 11pt; font-weight: 700;">MARGIN ~28%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 07</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 8: RETENTION, AGING & SUSTAINABILITY (Light)        -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-8">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>07 / RETENSI &amp; DAMPAK SIRKULAR</span>
+      </div>
+      <div class="header-number">INVENTORY LIFECYCLE &amp; ESG</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 600; margin: 0 0 6px 0;">
+          Siklus Retensi 30 Hari: Zero Dead-Stock &amp; Solusi Hijau
+        </h2>
+        <p style="font-size: 13.5pt; color: #574f46; margin: 0;">
+          Setiap pakaian memiliki siklus hidup jelas untuk menjaga perputaran rak studio tetap dinamis.
+        </p>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 0.25in;">
+        <div class="card card-accent-emerald">
+          <div class="stat-number" style="color: #047857;">HARI 1–14</div>
+          <h3 class="font-serif" style="font-size: 16pt; margin: 0 0 6px 0;">Fase Siaran Reguler</h3>
+          <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0;">
+            Pakaian masuk ke siaran harian TikTok Live sesuai jadwal tiering. <strong>70% stok terjual pada fase ini</strong> berkat antusiasme penonton studio.
+          </p>
+        </div>
+
+        <div class="card card-accent-amber">
+          <div class="stat-number" style="color: #d97706;">HARI 15–29</div>
+          <h3 class="font-serif" style="font-size: 16pt; margin: 0 0 6px 0;">Fase Flash Markdown</h3>
+          <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0;">
+            Pakaian yang belum terjual dipromosikan dalam sesi *special bundle* atau penyesuaian target live dengan persetujuan penitip untuk mempercepat likuiditas.
+          </p>
+        </div>
+
+        <div class="card card-accent">
+          <div class="stat-number" style="color: #c2410c;">HARI 30+</div>
+          <h3 class="font-serif" style="font-size: 16pt; margin: 0 0 6px 0;">Obral Ceban / Buyout</h3>
+          <p style="font-size: 11pt; color: #574f46; line-height: 1.5; margin: 0;">
+            Penitip memiliki 2 opsi pasti: (1) Mengaktifkan beli putus obral Rp 10.000 tunai, atau (2) Mengambil kembali pakaian / mendonasikannya secara transparan.
+          </p>
+        </div>
+      </div>
+
+      <!-- ESG & Circular Impact Box -->
+      <div style="background: #eef7f2; border: 1px solid #a7d7c5; border-radius: 16px; padding: 18px 26px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="max-width: 9in;">
+          <strong style="font-size: 12.5pt; color: #065f46; display: block; margin-bottom: 4px;">
+            🌱 Dampak Lingkungan &amp; Ekonomi Keluarga di Kota Sukabumi
+          </strong>
+          <p style="font-size: 11pt; color: #2d5a47; margin: 0; line-height: 1.45;">
+            Mencegah pakaian layak pakai berakhir di TPA sampah Cikundul, menghemat ribuan liter air dari konsumsi tekstil baru, dan menyuntikkan ratusan juta rupiah langsung ke dompet keluarga di Sukabumi.
+          </p>
+        </div>
+        <div style="text-align: right;">
+          <div class="font-serif" style="font-size: 26pt; font-weight: 700; color: #047857;">&gt;60%</div>
+          <div style="font-size: 9.5pt; text-transform: uppercase; font-weight: 700; color: #065f46;">REPEAT CONSIGNOR RATE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 08</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 9: COMPETITIVE MOAT (Light)                        -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-9">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>08 / ANALISIS KOMPETISI &amp; KEUNGGULAN</span>
+      </div>
+      <div class="header-number">COMPETITIVE MOAT</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.2in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 600; margin: 0 0 6px 0;">
+          Mengapa PindahTangan Tak Tertandingi di Lapangan
+        </h2>
+        <p style="font-size: 13.5pt; color: #574f46; margin: 0;">
+          Kombinasi layanan *white-glove* penjemputan fisik, sterilisasi uap, dan kekuatan TikTok Live shopping.
+        </p>
+      </div>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">PARAMETER PERBANDINGAN</th>
+            <th style="width: 25%; background: #c2410c; color: #fff;">PINDAHTANGAN</th>
+            <th style="width: 25%;">MARKETPLACE C2C (CAROUSELL / SHOPEE)</th>
+            <th style="width: 25%;">THRIFT SHOP PASAR KONVENSIONAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>Effort Penitip / Penjual</td>
+            <td><strong>NOL (Kurir jemput gratis ke rumah)</strong></td>
+            <td>Tinggi (Foto, chat, bungkus, kirim sendiri)</td>
+            <td>Tinggi (Bawa karung sendiri ke lapak)</td>
+          </tr>
+          <tr>
+            <td>Standar Higienitas Pakaian</td>
+            <td><strong>Cuci Uap Suhu Tinggi &gt;100°C</strong></td>
+            <td>Tergantung penjual (bisa berbau apek)</td>
+            <td>Tidak higienis, perlu cuci berkali-kali</td>
+          </tr>
+          <tr class="highlight">
+            <td>Kecepatan Penjualan</td>
+            <td><strong>Cepat (Live TikTok harian, 7-12 hari)</strong></td>
+            <td>Sangat lambat (Bisa 3-6 bulan belum laku)</td>
+            <td>Pasif (Menunggu orang lewat toko)</td>
+          </tr>
+          <tr>
+            <td>Kepastian Pembayaran</td>
+            <td><strong>Otomatis Tiap Jumat 16.00 WIB</strong></td>
+            <td>Rentan komplain &amp; retur sepihak</td>
+            <td>Tunai tapi harga ditekan sangat murah</td>
+          </tr>
+          <tr class="highlight">
+            <td>Teknologi &amp; Barcode Tracking</td>
+            <td><strong>Full Web App + Barcode Tiap Pakaian</strong></td>
+            <td>Hanya daftar postingan biasa</td>
+            <td>Manual tanpa pencatatan digital</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top: 0.22in; background: #fff; border: 1px solid #e2dbce; border-radius: 12px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 11pt; color: #443c35;">
+          🛡️ <strong>Parit Pertahanan (Moat):</strong> Jaringan kurir hyperlocal, studio live berlisensi dengan telemetri Co-Pilot, dan loyalitas komunitas penitip di Sukabumi.
+        </span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 09</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 10: PILOT SUKABUMI & TRACTION (Dark)               -->
+  <!-- ======================================================== -->
+  <section class="slide theme-dark" id="slide-10">
+    <div class="slide-header">
+      <div class="header-tag" style="color: #f59e0b;">
+        <span>09 / PILOT PROJECT KOTA SUKABUMI</span>
+      </div>
+      <div class="header-number">PILOT TRACTION &amp; VALIDATION</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 400; margin: 0 0 6px 0; color: #fff;">
+          Pusat Operasional: Studio Hub Jl. Siliwangi No. 102
+        </h2>
+        <p style="font-size: 13.5pt; color: #d6cfc5; margin: 0;">
+          Melayani 7 kecamatan inti Kota Sukabumi dengan infrastruktur studio live dan gudang terpadu.
+        </p>
+      </div>
+
+      <div class="grid-4" style="margin-bottom: 0.25in;">
+        <div class="card" style="text-align: center; padding: 20px;">
+          <div class="stat-number" style="color: #ea580c;">7</div>
+          <div class="stat-label">KECAMATAN AKTIF</div>
+          <p style="font-size: 9.5pt; color: #a8a29e; margin: 6px 0 0 0;">Cikole, Citamiang, Baros, Warudoyong, Gunungpuyuh, Lembursitu, Cibeureum</p>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 20px;">
+          <div class="stat-number" style="color: #10b981;">100%</div>
+          <div class="stat-label">DISBURSEMENT ON-TIME</div>
+          <p style="font-size: 9.5pt; color: #a8a29e; margin: 6px 0 0 0;">Transfer gajian Jumat selalu tepat waktu tanpa tunggakan kas</p>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 20px;">
+          <div class="stat-number" style="color: #38bdf8;">150+</div>
+          <div class="stat-label">KAPASITAS LIVE / HARI</div>
+          <p style="font-size: 9.5pt; color: #a8a29e; margin: 6px 0 0 0;">3 shift siaran per hari (Siang, Sore, &amp; Prime Time Malam)</p>
+        </div>
+
+        <div class="card" style="text-align: center; padding: 20px;">
+          <div class="stat-number" style="color: #fbbf24;">Rp 10.000</div>
+          <div class="stat-label">REFERRAL REWARD</div>
+          <p style="font-size: 9.5pt; color: #a8a29e; margin: 6px 0 0 0;">Inisiatif Ajak Tetangga Bersih Lemari dengan kode unik</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="gap: 0.3in;">
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px 22px;">
+          <strong style="color: #e0a96d; font-size: 12pt; display: block; margin-bottom: 4px;">
+            📍 Lokasi Strategis Studio Hub Sukabumi
+          </strong>
+          <p style="font-size: 10.5pt; color: #c4bbb0; line-height: 1.5; margin: 0;">
+            Berlokasi di jantung kota Sukabumi (Jl. Siliwangi No. 102), memungkinkan kurir internal menjangkau seluruh kecamatan dalam radius 15-20 menit untuk penjemputan lemari yang responsif.
+          </p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 18px 22px;">
+          <strong style="color: #34d399; font-size: 12pt; display: block; margin-bottom: 4px;">
+            🎥 Fasilitas Studio Live Commerce
+          </strong>
+          <p style="font-size: 10.5pt; color: #c4bbb0; line-height: 1.5; margin: 0;">
+            Dilengkapi steamer boiler uap industri, ring-light pro, backdrop editorial chic, tablet Co-Pilot telemetri, dan stasiun barcode thermal packing zero-error.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 10</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 11: EXPANSION ROADMAP (Light)                      -->
+  <!-- ======================================================== -->
+  <section class="slide theme-light" id="slide-11">
+    <div class="slide-header">
+      <div class="header-tag">
+        <span>10 / ROADMAP PERTUMBUHAN</span>
+      </div>
+      <div class="header-number">SCALABILITY &amp; MILESTONES</div>
+    </div>
+
+    <div class="slide-body">
+      <div style="margin-bottom: 0.22in;">
+        <h2 class="font-serif" style="font-size: 32pt; font-weight: 600; margin: 0 0 6px 0;">
+          Rencana Ekspansi: Dari Sukabumi Menuju Jawa Barat
+        </h2>
+        <p style="font-size: 13.5pt; color: #574f46; margin: 0;">
+          Model hub-and-spoke yang mudah direplikasi di setiap kota tier-2 dan tier-3 di Indonesia.
+        </p>
+      </div>
+
+      <div class="grid-3" style="gap: 0.3in;">
+        <!-- Q3-Q4 2026 -->
+        <div class="card card-accent" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-terracotta" style="margin-bottom: 10px;">FASE 1 • Q3 - Q4 2026</span>
+            <h3 class="font-serif" style="font-size: 17pt; margin: 0 0 10px 0;">Dominasi Sukabumi Pilot</h3>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10.5pt; color: #574f46; line-height: 1.55;">
+              <li>Stabilisasi operasional 3 shift live TikTok harian.</li>
+              <li>Pencapaian 1.500 pakaian konsinyasi aktif per bulan.</li>
+              <li>Peluncuran pendaftaran real user mandiri &amp; portal web.</li>
+              <li>Ekspansi penjemputan ke wilayah Kabupaten Sukabumi (Cibadak &amp; Cisaat).</li>
+            </ul>
+          </div>
+          <div style="background: #fdf2e9; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 10pt; color: #9a3412;">
+            Target: Rp 100 Juta GMV / Bulan
+          </div>
+        </div>
+
+        <!-- Q1-Q2 2027 -->
+        <div class="card card-accent-amber" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-amber" style="margin-bottom: 10px;">FASE 2 • Q1 - Q2 2027</span>
+            <h3 class="font-serif" style="font-size: 17pt; margin: 0 0 10px 0;">Koridor Priangan Barat</h3>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10.5pt; color: #574f46; line-height: 1.55;">
+              <li>Replikasi Studio Hub ke <strong>Cianjur &amp; Bogor Selatan</strong>.</li>
+              <li>Peluncuran Talent Host Academy (melatih 20+ host live lokal).</li>
+              <li>Integrasi resmi TikTok Shop API &amp; Shopee Live Automation.</li>
+              <li>Peningkatan kapasitas uap hingga 5.000 helai per bulan.</li>
+            </ul>
+          </div>
+          <div style="background: #fef3c7; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 10pt; color: #92400e;">
+            Target: Rp 450 Juta GMV / Bulan
+          </div>
+        </div>
+
+        <!-- Q3-Q4 2027 -->
+        <div class="card card-accent-emerald" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="pill pill-emerald" style="margin-bottom: 10px;">FASE 3 • Q3 - Q4 2027</span>
+            <h3 class="font-serif" style="font-size: 17pt; margin: 0 0 10px 0;">Regional Scale &amp; Automation</h3>
+            <ul style="margin: 0; padding-left: 18px; font-size: 10.5pt; color: #574f46; line-height: 1.55;">
+              <li>Ekspansi Hub Bandung Raya &amp; Cirebon.</li>
+              <li>Aplikasi Mobile Android/iOS Penitip dengan AI Price Suggester.</li>
+              <li>Warehouse sortir otomatis dan conveyor pakaian.</li>
+              <li>Kemitraan strategis dengan brand fesyen nasional untuk dead-stock.</li>
+            </ul>
+          </div>
+          <div style="background: #d1fae5; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 10pt; color: #065f46;">
+            Target: &gt;Rp 1,5 Miliar GMV / Bulan
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>PindahTangan Pitch Deck</span>
+      <span>Slide 11</span>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SLIDE 12: CALL TO ACTION / CLOSING (Dark Luxury)         -->
+  <!-- ======================================================== -->
+  <section class="slide theme-dark" id="slide-12">
+    <div class="slide-header">
+      <div class="header-tag" style="color: #ea580c;">
+        <span>11 / HUBUNGI KAMI &amp; KOLABORASI</span>
+      </div>
+      <div class="header-number">JOIN THE REVOLUTION</div>
+    </div>
+
+    <div class="slide-body" style="align-items: center; justify-content: center; text-align: center;">
+      <div class="pill pill-gold-dark" style="margin-bottom: 0.2in;">
+        <span>MARI BERKOLABORASI BERSAMA PINDAHTANGAN</span>
+      </div>
+
+      <h2 class="font-serif" style="font-size: 42pt; font-weight: 400; margin: 0 0 0.15in 0; color: #fff; max-width: 11in;">
+        Lemari Bersih, Cuan Mengalir, Fesyen Sirkular Berkelanjutan
+      </h2>
+
+      <p style="font-size: 15pt; color: #d6cfc5; max-width: 9in; margin: 0 0 0.35in 0; line-height: 1.5; font-weight: 300;">
+        PindahTangan membuka pintu kolaborasi bagi <strong>Penitip Pakaian</strong>, <strong>Host Live Talent</strong>, serta <strong>Mitra Strategis &amp; Investor</strong> untuk memperluas dampak ekonomi sirkular di Indonesia.
+      </p>
+
+      <div class="grid-3" style="max-width: 12in; width: 100%; text-align: left; gap: 0.3in;">
+        <div class="card" style="padding: 20px 24px;">
+          <div style="font-size: 20pt; margin-bottom: 6px;">👗</div>
+          <strong style="color: #fff; font-size: 13pt; display: block;">Ingin Menitipkan Pakaian?</strong>
+          <p style="font-size: 10pt; color: #a8a29e; margin: 4px 0 10px 0;">Kumpulkan 20 pakaian, kami jemput gratis ke rumah Anda di Sukabumi.</p>
+          <div style="font-size: 10pt; font-weight: 600; color: #ea580c;">Daftar di: pindahtangan-zeta.vercel.app</div>
+        </div>
+
+        <div class="card" style="padding: 20px 24px;">
+          <div style="font-size: 20pt; margin-bottom: 6px;">🎙️</div>
+          <strong style="color: #fff; font-size: 13pt; display: block;">Tertarik Jadi Host Talent?</strong>
+          <p style="font-size: 10pt; color: #a8a29e; margin: 4px 0 10px 0;">Fee shift Rp 60.000 + komisi Rp 2.000/pcs laku di Studio Jl. Siliwangi No. 102.</p>
+          <div style="font-size: 10pt; font-weight: 600; color: #10b981;">Hubungi WA: 0811-9988-7766</div>
+        </div>
+
+        <div class="card" style="padding: 20px 24px;">
+          <div style="font-size: 20pt; margin-bottom: 6px;">🤝</div>
+          <strong style="color: #fff; font-size: 13pt; display: block;">Mitra Bisnis &amp; Investor</strong>
+          <p style="font-size: 10pt; color: #a8a29e; margin: 4px 0 10px 0;">Diskusikan ekspansi regional, penyediaan inventaris dead-stock, atau pendanaan.</p>
+          <div style="font-size: 10pt; font-weight: 600; color: #fbbf24;">Email: akmal@pindahtangan.com</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer" style="justify-content: space-between;">
+      <span>PindahTangan Studio Hub • Jl. Siliwangi No. 102, Kota Sukabumi</span>
+      <span>© 2026 PindahTangan. Hak Cipta Dilindungi Undang-Undang.</span>
+    </div>
+  </section>
+
+</body>
+</html>

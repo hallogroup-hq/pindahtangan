@@ -24,7 +24,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 bg-terracotta-500/20 text-terracotta-300 border border-terracotta-500/30 px-3.5 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase">
             <Sparkles className="w-3 h-3 text-terracotta-400" />
-            <span>Fase 1: Kota Sukabumi</span>
+            <span>Fase 1: Pilot Terbatas Sukabumi</span>
           </div>
 
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-linen-50">
@@ -32,15 +32,17 @@ export default function HomePage() {
           </h2>
 
           <p className="text-linen-300 text-xs sm:text-sm font-sans max-w-xl mx-auto leading-relaxed">
-            Kurir internal PindahTangan siap menjemput kantong pakaian ke rumahmu. Tanpa biaya di muka, tanpa drama tawar-menawar, gajian tepat waktu tiap Jumat.
+            PindahTangan membantu mengurus proses titip jual pakaian yang masih layak pakai —
+            mulai dari pengecekan sampai item siap ditawarkan. Area, jadwal, dan mekanisme
+            pencairan akan dikonfirmasi bersama sebelum item masuk proses pilot.
           </p>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/booking"
-              className="w-full sm:w-auto bg-terracotta-500 hover:bg-terracotta-600 text-white px-8 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-terracotta-900/40"
+              className="w-full sm:w-auto bg-espresso-900 hover:bg-terracotta-600 text-white px-8 py-3.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2"
             >
-              <span>Jadwalkan Penjemputan Lemari</span>
+              <span>Tanya soal pilot</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
 

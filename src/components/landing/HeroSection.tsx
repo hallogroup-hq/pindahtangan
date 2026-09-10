@@ -12,69 +12,62 @@ export default function HeroSection() {
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 rounded-full bg-terracotta-500"></span>
               <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-espresso-500 font-semibold">
-                Layanan Konsinyasi Fesyen Terkelola • Pilot Sukabumi
+                Pilot terbatas Sukabumi
               </span>
             </div>
 
             <div className="space-y-4">
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-espresso-900 leading-[1.12] tracking-tight">
-                Memberi <span className="italic font-serif text-terracotta-600 font-normal">nafas kedua</span> untuk pakaian terbaikmu.
+                Pakaian yang masih bagus, nggak harus diam di lemari.
               </h1>
-              <p className="font-serif text-lg sm:text-xl text-espresso-700 italic font-normal">
-                &ldquo;Dari lemarimu, berpindah tangan jadi cuan.&rdquo;
-              </p>
             </div>
 
             <p className="text-espresso-600 text-sm sm:text-base leading-relaxed max-w-xl font-sans">
-              Lemari penuh tapi enggan repot memfoto, mengukur, dan meladeni tawar-menawar sadis?
-              PindahTangan menjemput pakaianmu ke rumah di Kota Sukabumi, mensterilisasi dengan uap panas &gt;100°C,
-              lalu menjualnya secara profesional melalui siaran <strong>Live TikTok Commerce</strong>.
-              Uang tunai ditransfer otomatis ke rekeningmu setiap Jumat sore.
+              PindahTangan sedang menguji proses titip jual dengan kapasitas kecil di Sukabumi.
+              Setiap langkah — penerimaan, pengecekan, nilai bersih — dijalani per item
+              dan masih membutuhkan konfirmasi bersama. Kamu bisa fokus ke hal lain;
+              kami bantu rapikan prosesnya, sementara kita tetap terbuka bagi yang
+              tertarik mengikuti pilot ini.
             </p>
 
             {/* CTAs */}
+
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
               <Link
                 href="/booking"
                 className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-warm text-center"
               >
-                <span>Jemput Lemari (Gratis ≥20 pcs)</span>
+                <span>Tanya soal pilot</span>
                 <ArrowUpRight className="w-4 h-4 opacity-80" />
               </Link>
 
               <Link
-                href="#estimator"
+                href="#how-it-works"
                 className="border border-espresso-900/20 hover:border-espresso-900 text-espresso-900 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 text-center"
               >
-                Hitung Estimasi Cuan
+                Lihat cara kerjanya
               </Link>
             </div>
 
-            {/* Micro Stats Bar */}
-            <div className="pt-8 grid grid-cols-3 gap-6 border-t border-linen-300/80">
+            {/* Pilot Notes — replacement for unverified micro-stats */}
+
+            <div className="pt-8 grid grid-cols-2 gap-6 border-t border-linen-300/80">
               <div>
-                <span className="font-serif text-3xl font-light text-espresso-900 block">
-                  ≥20<span className="text-sm font-sans font-normal text-espresso-500 ml-1">pcs</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-espresso-500 block">
+                  Apa yang diuji
                 </span>
-                <span className="text-[10px] font-mono tracking-wider uppercase text-espresso-500 block mt-1">
-                  Gratis Dijemput Kurir
-                </span>
+                <p className="text-xs text-espresso-600 leading-relaxed">
+                  Penerimaan item, QC per item, updating status secara transparan.
+                </p>
               </div>
               <div>
-                <span className="font-serif text-3xl font-light text-espresso-900 block">
-                  100<span className="text-sm font-sans font-normal text-espresso-500 ml-1">°C</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-espresso-500 block">
+                  Apa yang belum dipastikan
                 </span>
-                <span className="text-[10px] font-mono tracking-wider uppercase text-espresso-500 block mt-1">
-                  Steril Uap Panas
-                </span>
-              </div>
-              <div>
-                <span className="font-serif text-3xl font-light text-espresso-900 block">
-                  16.00<span className="text-sm font-sans font-normal text-espresso-500 ml-1">WIB</span>
-                </span>
-                <span className="text-[10px] font-mono tracking-wider uppercase text-espresso-500 block mt-1">
-                  Gajian Tiap Jumat
-                </span>
+                <p className="text-xs text-espresso-600 leading-relaxed">
+                  Jadwal pasti penjemputan, gajian otomatis, estimasi cuan, dan hasil
+                  live yang menjamin penghasilan. Ini masih fase pilot terbatas.
+                </p>
               </div>
             </div>
           </div>
@@ -94,7 +87,7 @@ export default function HeroSection() {
                 {/* Minimalist Live Indicator */}
                 <div className="absolute top-4 left-4 flex items-center gap-2 bg-espresso-950/80 backdrop-blur-md text-linen-100 px-3 py-1 rounded-full border border-white/10 text-[10px] font-mono tracking-widest uppercase">
                   <span className="w-1.5 h-1.5 rounded-full bg-terracotta-500"></span>
-                  <span>Studio Live Sukabumi</span>
+                  <span>Pilot Sukabumi</span>
                 </div>
 
                 {/* Bottom Editorial Caption */}
@@ -102,21 +95,21 @@ export default function HeroSection() {
                   <div className="flex justify-between items-start">
                     <div>
                       <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-terracotta-600 block">
-                        Gantungan No. 42 • Tier B
+                        Contoh item • Konsep pilot
                       </span>
                       <h4 className="font-serif text-base font-medium text-espresso-900 mt-0.5">
-                        Zara Linen Summer Shirt
+                        Pakaian layak pakai
                       </h4>
                       <p className="text-[11px] text-espresso-500">
-                        Kondisi Kurasi 9.5/10 • Cuci Uap Panas
+                        Masuk proses pengecekan & nilai bersih
                       </p>
                     </div>
                     <div className="text-right">
                       <span className="text-[9px] font-mono uppercase tracking-wider text-espresso-400 block">
-                        Hak Bersih
+                        Proses pilot
                       </span>
                       <span className="font-serif text-lg font-medium text-espresso-900">
-                        Rp 45.000
+                        Dibahas per item
                       </span>
                     </div>
                   </div>

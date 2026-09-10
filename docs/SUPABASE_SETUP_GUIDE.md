@@ -29,7 +29,7 @@ PindahTangan dirancang dengan arsitektur **Zero-Downtime Dual-Mode**:
 1. Di dashboard Supabase, buka menu **SQL Editor** pada sidebar kiri.
 2. Klik **"New Query"**.
 3. Buka file skrip DDL yang telah kami siapkan di repositori:
-   * [`supabase/migrations/20260905_initial_schema.sql`](../supabase/migrations/20260905_initial_schema.sql)
+   * [`supabase/migrations/01_initial_schema.sql`](./supabase/migrations/01_initial_schema.sql) — **Hanya migrasi kanonis dengan RLS least-privilege**
 4. Salin seluruh isi file tersebut dan tempelkan ke SQL Editor Supabase.
 5. Klik tombol **"Run"** (atau tekan `Ctrl+Enter` / `Cmd+Enter`).
 6. Pastikan muncul pesan sukses: `Success. No rows returned`.
@@ -39,8 +39,23 @@ PindahTangan dirancang dengan arsitektur **Zero-Downtime Dual-Mode**:
 > * 7 Tabel Inti: `profiles`, `intake_batches`, `clothes_items`, `orders`, `payouts`, `live_sessions`, `item_status_logs`.
 > * 9 Tipe ENUM PostgreSQL untuk type-safety mutlak.
 > * Trigger otomatis `trg_clothes_status_change` untuk audit trail riwayat pakaian.
-> * Row Level Security (RLS) policies.
+> * Row Level Security (RLS) policies dengan least-privilege untuk semua 7 role.
 > * Publikasi Realtime (`supabase_realtime`) untuk tabel pakaian, pesanan, dan kantong masuk.
+
+---
+
+## ⚠️ Migrasi TINGGAL (Dilarang digunakan dalam produksi)
+
+Migrasi lama `20260905_initial_schema.sql` telah diarsipkan dengan nama:
+* `supabase/migrations/ARCHIVE_20260905_initial_schema_DANGEROUS_OPEN_RLS.sql`
+
+Migrasi ini memiliki RLS policies terbuka (PUBLIC READ/WRITE) dan **HARUS DILARANG** digunakan di environment produksi.
+
+> [!WARNING]
+> Migration lama mengizinkan:
+> * Public SELECT dari semua tabel (profiles, clothes_items, orders, payouts, dll)
+> * Public INSERT/UPDATE ke tabel tertentu
+> * Ini melanggar prinsip least-privilege dan merupakan risiko keamanan.
 
 ---
 
@@ -54,14 +69,17 @@ Untuk langsung mengisi data percontohan pilot Sukabumi (Ibu Ratna Dewi, Kang Ase
 4. Klik **"Run"**.
 5. Buka menu **Table Editor** di sidebar untuk memverifikasi bahwa tabel `profiles`, `clothes_items`, dan `intake_batches` telah terisi data.
 
+> [!TIP]
+> Seed data hanya untuk **development** dan **evaluasi internal**. Seed data ini **HARUS DIBUANG** sebelum deployment ke production, atau dikonfigurasi untuk tidak ter-load di build produksi (SEED_PROFILES, SEED_ITEDS, dll sudah dikosongkan di `src/lib/store.ts`).
+
 ---
 
 ## 🔑 Langkah 4: Ambil Kredensial API Supabase
 
-1. Di dashboard Supabase, buka **Project Settings** (ikon gerigi di kiri bawah) $\to$ pilih tab **API**.
+1. Di dashboard Supabase, buka **Project Settings** (ikon gerigi di kiri bawah) $\\to$ pilih tab **API**.
 2. Salin nilai berikut:
    * **Project URL:** Contoh: `https://xyzprojectid.supabase.co`
-   * **anon / public key:** Contoh: `eyJhbGciOiJIUzI1NiIsInR5cCI6...`
+   * **anon / public key:** Contoh: `eyJhbG...cCI6...`
 
 ---
 
@@ -74,7 +92,7 @@ Untuk langsung mengisi data percontohan pilot Sukabumi (Ibu Ratna Dewi, Kang Ase
 2. Buka `.env.local` dan masukkan kredensial yang Anda salin:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://xyzprojectid.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...VCJ9...
    ```
 3. Jalankan aplikasi lokal:
    ```bash
@@ -90,15 +108,17 @@ Untuk langsung mengisi data percontohan pilot Sukabumi (Ibu Ratna Dewi, Kang Ase
 Agar website produksi di [https://pindahtangan-zeta.vercel.app](https://pindahtangan-zeta.vercel.app) juga terhubung ke Supabase Cloud:
 
 ### Opsi A: Melalui Vercel Dashboard Web
-1. Buka [Vercel Dashboard](https://vercel.com) $\to$ pilih project `pindahtangan`.
-2. Masuk ke tab **Settings** $\to$ **Environment Variables**.
+
+1. Buka [Vercel Dashboard](https://vercel.com) $\\to$ pilih project `pindahtangan`.
+2. Masuk ke tab **Settings** $\\to$ **Environment Variables**.
 3. Tambahkan 2 variabel:
    * Key: `NEXT_PUBLIC_SUPABASE_URL` | Value: *(URL Supabase Anda)* | Environments: Production, Preview, Development.
    * Key: `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Value: *(Anon Key Supabase Anda)* | Environments: Production, Preview, Development.
 4. Klik **Save**.
-5. Buka tab **Deployments** $\to$ pada deployment terbaru klik titik tiga (`...`) $\to$ **Redeploy**.
+5. Buka tab **Deployments** $\\to$ pada deployment terbaru klik titik tiga (`...`) $\\to$ **Redeploy**.
 
 ### Opsi B: Melalui Terminal (Vercel CLI)
+
 ```bash
 npx vercel env add NEXT_PUBLIC_SUPABASE_URL production
 # Masukkan URL saat diminta
@@ -118,4 +138,4 @@ npx vercel --prod
 2. Di header bagian atas, pastikan badge status menampilkan:
    `🟢 Cloud Live (Realtime)`.
 3. Buka halaman `/host` di tablet/perangkat lain, klik `[ MARK SOLD ]` pada salah satu gantungan.
-4. Tanpa reload, periksa `/portal` atau `/admin/fulfillment` di perangkat lain $\to$ item langsung berpindah status menjadi `sold` & `pending_pack` secara real-time!
+4. Tanpa reload, periksa `/portal` atau `/admin/fulfillment` di perangkat lain $\\to$ item langsung berpindah status menjadi `sold` & `pending_pack` secara real-time!
