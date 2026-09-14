@@ -171,31 +171,31 @@ function CatalogContent() {
       )}
 
       {/* Header Banner */}
-      <section className="bg-linen-100/70 border-b border-linen-200/80 pt-10 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <div className="flex items-center gap-2.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-terracotta-50 text-terracotta-800 text-[11px] font-mono font-medium border border-terracotta-200 uppercase tracking-wider">
+      <section className="bg-linen-100/70 border-b border-linen-200/80 pt-6 pb-8 sm:pt-10 sm:pb-12">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6">
+            <div className="space-y-2 sm:space-y-3 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-terracotta-50 text-terracotta-800 text-[10px] sm:text-[11px] font-mono font-medium border border-terracotta-200 uppercase tracking-wider">
                   <Sparkles className="w-3 h-3 text-terracotta-600" />
                   Katalog Kurasi Langsung
                 </span>
-                <span className="text-[11px] font-mono text-espresso-600">
+                <span className="text-[10px] sm:text-[11px] font-mono text-espresso-600">
                   Kota Sukabumi
                 </span>
               </div>
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-espresso-900 tracking-tight">
+              <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-normal text-espresso-900 tracking-tight">
                 Katalog Baju <span className="italic font-serif text-terracotta-600">Siap Kirim</span>
               </h1>
-              <p className="text-espresso-700 text-sm sm:text-base leading-relaxed">
+              <p className="text-espresso-700 text-xs sm:text-base leading-relaxed">
                 Pakaian kurasi pilihan dari lemari warga Sukabumi. Telah disterilisasi uap panas &gt;100°C, wangi, bergaransi bebas noda sobek, dan siap dipesan langsung via WhatsApp Admin Hub.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white p-3.5 rounded-2xl border border-linen-200 shadow-sm shrink-0">
-              <div className="text-left sm:text-right pr-2">
-                <p className="text-[11px] font-mono uppercase text-espresso-500 font-semibold">Admin Pemesanan</p>
-                <p className="text-sm font-semibold text-espresso-900">0812-8899-7711</p>
+            <div className="flex items-center justify-between sm:justify-end gap-3 bg-white p-2.5 sm:p-3.5 rounded-2xl border border-linen-200 shadow-sm shrink-0">
+              <div className="text-left sm:text-right pr-1 sm:pr-2">
+                <p className="text-[10px] sm:text-[11px] font-mono uppercase text-espresso-500 font-semibold">Admin Pemesanan</p>
+                <p className="text-xs sm:text-sm font-semibold text-espresso-900">0812-8899-7711</p>
               </div>
               <a
                 href={createDirectWhatsAppLink(
@@ -204,9 +204,9 @@ function CatalogContent() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-sm"
               >
-                <MessageCircle className="w-4 h-4 fill-white" />
+                <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white" />
                 <span>Chat Admin WA</span>
               </a>
             </div>
@@ -215,36 +215,35 @@ function CatalogContent() {
       </section>
 
       {/* Filter and Search Bar */}
-      <section className="sticky top-20 z-30 bg-linen-50/95 backdrop-blur-md border-b border-linen-200/80 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
-          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+      <section className="sticky top-20 z-30 bg-linen-50/95 backdrop-blur-md border-b border-linen-200/80 py-2.5 sm:py-4 shadow-sm">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-2 sm:space-y-3">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 sm:gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-espresso-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-espresso-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nama pakaian, brand (Zara, Uniqlo), ukuran, atau No. Gantungan..."
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-linen-300 rounded-xl text-xs sm:text-sm text-espresso-900 placeholder:text-espresso-400 focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all"
+                placeholder="Cari nama pakaian, brand, ukuran, No. Gantungan..."
+                className="w-full pl-9 pr-8 py-2 sm:py-2.5 bg-white border border-linen-300 rounded-xl text-xs sm:text-sm text-espresso-900 placeholder:text-espresso-400 focus:outline-none focus:border-terracotta-500 focus:ring-1 focus:ring-terracotta-500 transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-espresso-400 hover:text-espresso-600 p-1"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-espresso-400 hover:text-espresso-600 p-1"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            {/* Size Filter Dropdown */}
+            {/* Size Filter Dropdown & Checkbox */}
             <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs text-espresso-600 font-medium hidden sm:inline">Ukuran:</span>
               <select
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
-                className="bg-white border border-linen-300 rounded-xl px-3 py-2.5 text-xs text-espresso-900 focus:outline-none focus:border-terracotta-500 font-medium cursor-pointer"
+                className="bg-white border border-linen-300 rounded-xl px-2.5 py-2 sm:py-2.5 text-xs text-espresso-900 focus:outline-none focus:border-terracotta-500 font-medium cursor-pointer"
               >
                 <option value="all">Semua Ukuran</option>
                 {availableSizes.map((size) => (
@@ -255,7 +254,7 @@ function CatalogContent() {
               </select>
 
               {/* Only Available Checkbox */}
-              <label className="flex items-center gap-2 bg-white border border-linen-300 rounded-xl px-3 py-2.5 text-xs font-medium text-espresso-800 cursor-pointer select-none hover:border-linen-400">
+              <label className="flex items-center gap-1.5 bg-white border border-linen-300 rounded-xl px-2.5 py-2 sm:py-2.5 text-xs font-medium text-espresso-800 cursor-pointer select-none hover:border-linen-400">
                 <input
                   type="checkbox"
                   checked={onlyAvailable}
@@ -268,20 +267,20 @@ function CatalogContent() {
           </div>
 
           {/* Category Tier Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 text-xs scrollbar-none">
             <button
               onClick={() => setSelectedTier('all')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+              className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium transition-all shrink-0 text-[11px] sm:text-xs ${
                 selectedTier === 'all'
                   ? 'bg-espresso-900 text-linen-50 shadow-sm'
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
               }`}
             >
-              Semua Koleksi ({data.items.length})
+              Semua ({data.items.length})
             </button>
             <button
               onClick={() => setSelectedTier('tier_a')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+              className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium transition-all shrink-0 text-[11px] sm:text-xs ${
                 selectedTier === 'tier_a'
                   ? 'bg-espresso-900 text-linen-50 shadow-sm'
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
@@ -291,7 +290,7 @@ function CatalogContent() {
             </button>
             <button
               onClick={() => setSelectedTier('tier_b')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+              className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium transition-all shrink-0 text-[11px] sm:text-xs ${
                 selectedTier === 'tier_b'
                   ? 'bg-espresso-900 text-linen-50 shadow-sm'
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
@@ -301,7 +300,7 @@ function CatalogContent() {
             </button>
             <button
               onClick={() => setSelectedTier('tier_c')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-all shrink-0 ${
+              className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium transition-all shrink-0 text-[11px] sm:text-xs ${
                 selectedTier === 'tier_c'
                   ? 'bg-espresso-900 text-linen-50 shadow-sm'
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
@@ -314,8 +313,8 @@ function CatalogContent() {
       </section>
 
       {/* Main Grid Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="flex items-center justify-between mb-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8">
+        <div className="flex items-center justify-between mb-3 sm:mb-6">
           <p className="text-xs sm:text-sm text-espresso-600 font-mono">
             Menampilkan <span className="font-semibold text-espresso-950">{filteredItems.length}</span> pakaian siap kirim
           </p>
@@ -352,8 +351,8 @@ function CatalogContent() {
           </div>
         )}
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Products Grid: 2 columns on mobile, 2 on sm, 3 on md, 4 on lg */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
           {filteredItems.map((item) => {
             const isSold = item.status === 'sold' || item.status === 'packed' || item.status === 'shipped';
             const isCopied = copiedItemId === item.id;
@@ -363,7 +362,7 @@ function CatalogContent() {
               <div
                 key={item.id}
                 onClick={() => handleOpenDetail(item)}
-                className="group bg-white rounded-2xl border border-linen-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col cursor-pointer relative"
+                className="group bg-white rounded-xl sm:rounded-2xl border border-linen-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col cursor-pointer relative"
               >
                 {/* Image Container */}
                 <div className="relative aspect-[3/4] w-full bg-linen-100 overflow-hidden">
@@ -375,12 +374,12 @@ function CatalogContent() {
                   />
 
                   {/* Hangtag & Tier Badges */}
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-1 pointer-events-none">
-                    <span className="bg-espresso-950/80 backdrop-blur-md text-linen-100 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wider uppercase border border-white/10 font-medium">
+                  <div className="absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 flex items-center justify-between gap-1 pointer-events-none">
+                    <span className="bg-espresso-950/80 backdrop-blur-md text-linen-100 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-mono tracking-wider uppercase border border-white/10 font-medium">
                       #{item.hangtag_number}
                     </span>
                     <span
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded-full border backdrop-blur-md ${tierConfig.badgeColor}`}
+                      className={`text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.5 rounded-full border backdrop-blur-md ${tierConfig.badgeColor}`}
                     >
                       {item.category_tier === 'tier_a'
                         ? 'Tier A'
@@ -392,9 +391,9 @@ function CatalogContent() {
 
                   {/* Status Overlay if Sold */}
                   {isSold && (
-                    <div className="absolute inset-0 bg-espresso-950/60 backdrop-blur-[2px] flex items-center justify-center p-4">
-                      <span className="bg-rose-500/90 text-white font-mono uppercase text-xs tracking-wider px-3 py-1.5 rounded-full border border-white/20 font-medium shadow-lg">
-                        Sudah Terjual
+                    <div className="absolute inset-0 bg-espresso-950/60 backdrop-blur-[2px] flex items-center justify-center p-2 text-center">
+                      <span className="bg-rose-500/90 text-white font-mono uppercase text-[10px] sm:text-xs tracking-wider px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/20 font-medium shadow-lg">
+                        Terjual
                       </span>
                     </div>
                   )}
@@ -403,59 +402,59 @@ function CatalogContent() {
                   <button
                     onClick={(e) => handleCopyLink(e, item)}
                     title="Salin Link Produk Ini"
-                    className="absolute bottom-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white text-espresso-800 shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95"
+                    className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white/90 hover:bg-white text-espresso-800 shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95"
                   >
                     {isCopied ? (
-                      <Check className="w-4 h-4 text-emerald-600" />
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
                     ) : (
-                      <Copy className="w-4 h-4 text-espresso-700" />
+                      <Copy className="w-3.5 h-3.5 text-espresso-700" />
                     )}
                   </button>
                 </div>
 
                 {/* Content Section */}
-                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                  <div className="space-y-1.5">
+                <div className="p-2.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
+                  <div className="space-y-1">
                     {/* Brand & Size */}
-                    <div className="flex items-center justify-between text-xs text-espresso-500 font-mono">
-                      <span className="font-semibold text-espresso-800 uppercase tracking-wider">
-                        {item.brand || 'Original Brand'}
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs text-espresso-500 font-mono gap-1">
+                      <span className="font-semibold text-espresso-800 uppercase tracking-wider truncate">
+                        {item.brand || 'Original'}
                       </span>
-                      <span className="bg-linen-100 text-espresso-700 px-2 py-0.5 rounded font-medium">
-                        Size {item.size || '-'} {item.chest_width_cm ? `• LD ${item.chest_width_cm}` : ''}
+                      <span className="bg-linen-100 text-espresso-700 px-1.5 py-0.5 rounded font-medium shrink-0">
+                        {item.size || '-'} {item.chest_width_cm ? `• LD${item.chest_width_cm}` : ''}
                       </span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="font-serif text-sm sm:text-base font-normal text-espresso-900 line-clamp-2 leading-snug group-hover:text-terracotta-600 transition-colors">
+                    <h3 className="font-serif text-xs sm:text-base font-normal text-espresso-900 line-clamp-2 leading-snug group-hover:text-terracotta-600 transition-colors">
                       {item.title}
                     </h3>
                   </div>
 
                   {/* Price & Action Buttons */}
-                  <div className="pt-2 border-t border-linen-100 space-y-3">
+                  <div className="pt-1.5 sm:pt-2 border-t border-linen-100 space-y-2 sm:space-y-3">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-[10px] font-mono uppercase text-espresso-500">Harga Siap Kirim</span>
-                      <span className="font-serif text-lg font-medium text-espresso-950">
+                      <span className="text-[9px] sm:text-[10px] font-mono uppercase text-espresso-500">Harga</span>
+                      <span className="font-serif text-xs sm:text-lg font-semibold text-espresso-950">
                         {formatIDR(item.target_live_price)}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-0.5" onClick={(e) => e.stopPropagation()}>
                       {/* Copy Link Button */}
                       <button
                         onClick={(e) => handleCopyLink(e, item)}
-                        className="w-full py-2 px-2.5 rounded-xl border border-linen-300 hover:border-espresso-900 bg-linen-50 hover:bg-white text-espresso-800 text-[11px] font-medium flex items-center justify-center gap-1.5 transition-all"
+                        className="w-full py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg sm:rounded-xl border border-linen-300 hover:border-espresso-900 bg-linen-50 hover:bg-white text-espresso-800 text-[10px] sm:text-[11px] font-medium flex items-center justify-center gap-1 sm:gap-1.5 transition-all"
                       >
                         {isCopied ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
-                            <span className="text-emerald-700">Tersalin!</span>
+                            <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-600 shrink-0" />
+                            <span className="text-emerald-700 truncate">Tersalin</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3.5 h-3.5 text-espresso-600" />
-                            <span>Salin Link</span>
+                            <Copy className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-espresso-600 shrink-0" />
+                            <span className="truncate">Salin</span>
                           </>
                         )}
                       </button>
@@ -465,15 +464,15 @@ function CatalogContent() {
                         href={getWhatsAppOrderUrl(item)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => sound.playCountdownTick()}
-                        className={`w-full py-2 px-2.5 rounded-xl text-white text-[11px] font-medium flex items-center justify-center gap-1.5 transition-all shadow-sm ${
+                        onClick={() => sound.playSuccessBeep()}
+                        className={`w-full py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-[11px] font-medium flex items-center justify-center gap-1 sm:gap-1.5 transition-all shadow-sm ${
                           isSold
                             ? 'bg-stone-400 cursor-not-allowed pointer-events-none'
                             : 'bg-emerald-600 hover:bg-emerald-700'
                         }`}
                       >
-                        <MessageCircle className="w-3.5 h-3.5 fill-white shrink-0" />
-                        <span>Pesan WA</span>
+                        <MessageCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white shrink-0" />
+                        <span className="truncate">Pesan WA</span>
                       </a>
                     </div>
                   </div>
