@@ -13,13 +13,12 @@ export default function SukabumiCoverage() {
             <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-espresso-500 font-semibold block">
               Area Operasional
             </span>
-
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-espresso-900 tracking-tight">
-              Penjemputan Langsung untuk Peserta Pilot
+              Penjemputan Langsung di Wilayah Kota Sukabumi
             </h2>
-
             <p className="text-espresso-600 text-sm leading-relaxed font-sans">
-              Penjemputan kurir tersedia untuk peserta pilot terbatas di Sukabumi. Area dan jadwal penyerahan akan dikonfirmasi bersama saat pendaftaran.
+              Untuk menjamin penanganan higienis dan kecepatan kurasi, kurir internal PindahTangan
+              melayani penjemputan berkala di 7 kecamatan Kota Sukabumi dari hari Senin hingga Sabtu.
             </p>
 
             <div className="pt-2 grid grid-cols-2 gap-3">
@@ -34,17 +33,13 @@ export default function SukabumiCoverage() {
               ))}
               <div className="bg-linen-100 rounded-xl p-3 border border-linen-200 text-xs font-medium text-espresso-700">
                 <span className="font-mono text-[10px] text-sage-600 mr-2">•</span>
-                <span>Ketersediaan akan diverifikasi saat pilot</span>
+                <span>Drop-off Mandiri Studio</span>
               </div>
             </div>
 
             <div className="pt-4 border-t border-linen-200 text-xs text-espresso-500 space-y-1">
-              <p>
-                <strong>Layanan kurir:</strong> Ditetapkan saat pendaftaran pilot.
-              </p>
-              <p>
-                <strong>Drop-off mandiri:</strong> Jl. Siliwangi atau via transportasi lain. Detail akan dikonfirmasi saat pendaftaran.
-              </p>
+              <p>• <strong>≥ 20 Potong:</strong> Layanan kurir jemput ke pintu rumah bebas ongkir.</p>
+              <p>• <strong>&lt; 20 Potong:</strong> Dapat diantar mandiri atau menggunakan Gosend/GrabExpress.</p>
             </div>
           </div>
 
@@ -56,50 +51,49 @@ export default function SukabumiCoverage() {
                   Pusat Operasional
                 </span>
                 <h3 className="font-serif text-2xl font-normal text-espresso-900">
-                  Studio PindahTangan
+                  Studio PindahTangan Hub Sukabumi
                 </h3>
               </div>
 
               <div className="space-y-5 text-xs text-espresso-700 font-sans">
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wider text-espresso-400 block mb-1">
-                    Alamat Studio & Drop-Point:
+                    Alamat Drop-Point &amp; Studio Live:
                   </span>
                   <p className="text-espresso-900 font-medium leading-relaxed">
-                    Lokasi studio akan dikonfirmasi bersama peserta pilot.
+                    Jl. Siliwangi No. 102, Cikole, Kota Sukabumi, Jawa Barat 43113
                   </p>
                 </div>
 
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wider text-espresso-400 block mb-1">
-                    Jam Operasional:
+                    Jam Kerja QC &amp; Intake:
                   </span>
                   <p className="text-espresso-900 leading-relaxed">
-                    Jadwal akan dikonfirmasi bersama saat pendaftaran.
+                    Senin – Sabtu: 08.30 – 17.00 WIB
                   </p>
                 </div>
 
                 <div>
                   <span className="font-mono text-[10px] uppercase tracking-wider text-espresso-400 block mb-1">
-                    Pendaftaran Pilot:
+                    Jadwal Live TikTok Shopping:
                   </span>
                   <div className="space-y-1 text-espresso-800">
-                    <p>
-                      <strong>Klik di bawah ini</strong> untuk berpartisipasi dalam pilot terbatas. Kapasitas sedang dipastikan, dan area operasional serta jadwal akan dikonfirmasi bersama.
-                    </p>
+                    <p>• <strong>Sore (16.00 – 18.00 WIB):</strong> Tier B — Casual Chic &amp; Workwear</p>
+                    <p>• <strong>Malam (20.00 – 22.00 WIB):</strong> Tier A — Branded &amp; Gamis Pesta</p>
                   </div>
                 </div>
               </div>
 
               <div className="pt-6 border-t border-linen-200 flex items-center justify-between">
                 <span className="text-xs text-espresso-500">
-                  Ingin berpartisipasi?
+                  Ingin pakaianmu masuk siaran minggu ini?
                 </span>
                 <Link
                   href="/booking"
                   className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all flex items-center gap-1.5"
                 >
-                  <span>Daftar Pilot</span>
+                  <span>Booking Jemput</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
                 </Link>
               </div>

@@ -36,22 +36,10 @@ export default function Navbar() {
     tag?: string;
   };
 
-  // Public nav links - only customer-facing routes
-  const publicNavLinks: NavLink[] = [
+  const navLinks: NavLink[] = [
     { href: '/', label: 'Beranda' },
     { href: '/booking', label: 'Jemput Lemari' },
-  ];
-
-  // Authenticated user nav links - includes portal but hides staff routes from non-staff
-  const userNavLinks: NavLink[] = [
-    { href: '/', label: 'Beranda' },
     { href: '/portal', label: 'Lemari Saya' },
-    { href: '/booking', label: 'Titip Lagi' },
-  ];
-
-  // Staff-only routes - only shown when user has staff role and is logged in
-  const isStaff = activeUser?.role === 'admin' || activeUser?.role === 'host';
-  const staffNavLinks: NavLink[] = isLoggedIn && isStaff ? [
     { href: '/studio', label: 'Studio QC' },
     {
       href: '/host',
@@ -59,7 +47,7 @@ export default function Navbar() {
       tag: liveQueueCount > 0 ? `${liveQueueCount}` : undefined,
     },
     { href: '/admin', label: 'Backoffice' },
-  ] : [];
+  ];
 
   const handleLogout = () => {
     sound.playCountdownTick();
@@ -91,13 +79,13 @@ export default function Navbar() {
               Pindah<span className="italic font-normal text-terracotta-600">Tangan</span>
             </span>
             <span className="text-[9px] font-mono tracking-[0.2em] text-espresso-500 uppercase -mt-1">
-              Sukabumi Pilot
+              Kota Sukabumi
             </span>
           </Link>
 
           {/* Navigation Links (Desktop) */}
           <nav className="hidden md:flex space-x-8">
-            {(!isLoggedIn ? publicNavLinks : [...userNavLinks, ...staffNavLinks]).map((item) => {
+            {navLinks.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -127,9 +115,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/booking"
-              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider uppercase transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
+              className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-5 py-2.5 rounded-full text-xs font-medium uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 shadow-sm hover:shadow-warm"
             >
-               <span>Tanya soal pilot</span>
+               <span>Jemput Lemari</span>
                <ArrowUpRight className="w-3.5 h-3.5 opacity-80" />
             </Link>
 
@@ -281,7 +269,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {(!isLoggedIn ? publicNavLinks : [...userNavLinks, ...staffNavLinks]).map((item) => {
+          {navLinks.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link

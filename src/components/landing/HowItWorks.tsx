@@ -5,22 +5,22 @@ export default function HowItWorks() {
     {
       num: '01',
       title: 'Booking Penjemputan',
-      desc: 'Tentukan jadwal penjemputan bersama. Opsi penyerahan akan dikonfirmasi per pilot participant.'
+      desc: 'Tentukan jadwal dan alamat rumahmu di Sukabumi. Kurir kami membawa kantong khusus dan menjemput gratis untuk titipan minimal 20 potong.',
     },
     {
       num: '02',
-      title: 'Kurati QC & Evaluasi Nilai',
-      desc: 'Setiap item diterima akan dicek kualitas dan kondisi. Nilai bersih akan dikonfirmasi per item sebelum masuk proses selanjutnya.'
+      title: 'Kurasi QC & Cuci Uap',
+      desc: 'Setiap pakaian diperiksa kancing dan nodanya, disterilisasi dengan uap panas bersuhu >100°C agar wangi butik, lalu diberi nomor hangtag display.',
     },
     {
       num: '03',
-      title: 'Bandingkan & Ajukan ke Live',
-      desc: 'Item yang lolos QC akan diajukan ke siaran live. Status dan harga akan diumumkan bersama peserta pilot.'
+      title: 'Siaran Live TikTok',
+      desc: 'Host berbakat kami memamerkan bajumu di TikTok Shopping sesuai tier kualitas. Penonton langsung checkout dengan harga terbaik.',
     },
     {
       num: '04',
-      title: 'Evaluasi Pencairan',
-      desc: 'Jadwal dan mekanisme pencairan akan dijelaskan sebelum item masuk proses. Tidak ada janji transfer otomatis di fase pilot ini.'
+      title: 'Pencairan Dana Jumat',
+      desc: 'Hasil penjualan langsung ditransfer ke rekening bank atau dompet digitalmu setiap Jumat sore pukul 16.00 WIB disertai slip rincian transparan.',
     },
   ];
 
@@ -33,11 +33,11 @@ export default function HowItWorks() {
             Alur Konsinyasi Terkelola
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-espresso-900 tracking-tight">
-            Bagaimana PindahTangan Bekerja (Pilot)?
+            Bagaimana PindahTangan Bekerja?
           </h2>
           <p className="text-xs sm:text-sm text-espresso-600 font-sans leading-relaxed">
-            Pengalaman sirkular fesyen yang sedang diuji. Setiap langkah dijalankan per
-            item dan bersama pilot participant, bukan janji operasional standar.
+            Pengalaman sirkular fesyen tanpa repot bagi kamu yang ingin mengosongkan lemari
+            tanpa harus membuang waktu dan energi meladeni pembeli.
           </p>
         </div>
 
@@ -63,10 +63,10 @@ export default function HowItWorks() {
         <div className="mt-24 max-w-4xl mx-auto bg-linen-50 rounded-2xl p-8 sm:p-12 border border-linen-200">
           <div className="text-center max-w-xl mx-auto mb-10">
             <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-espresso-500 font-semibold block mb-1">
-              Perbandingan Nilai (Pilot vs. Tradisional)
+              Perbandingan Nilai
             </span>
             <h3 className="font-serif text-2xl sm:text-3xl font-normal text-espresso-900">
-              Panduan Panduan bagi Peserta Pilot
+              Menjual Mandiri vs. PindahTangan
             </h3>
           </div>
 
@@ -82,39 +82,39 @@ export default function HowItWorks() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-espresso-400 font-mono">—</span>
-                  <span>Mengukur dan melampirkan detail ukuran per pakaian.</span>
+                  <span>Mengukur lingkar dada, panjang lengan, dan detail kain satu per satu.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-espresso-400 font-mono">—</span>
-                  <span>Menghadapi tawaran dan pembatalan dari pembeli individu.</span>
+                  <span>Lelah meladeni tawaran sadis atau pembeli yang membatalkan pesanan.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-espresso-400 font-mono">—</span>
-                  <span>Mengurus packing, ekspedisi, dan transfer uang sendiri.</span>
+                  <span>Membeli bubble wrap, mengemas paket, dan antre ke counter ekspedisi.</span>
                 </li>
               </ul>
             </div>
 
             <div className="p-6 rounded-xl bg-white border-2 border-terracotta-500/30 space-y-4 shadow-sm">
               <span className="font-mono text-[10px] uppercase tracking-wider text-terracotta-600 font-semibold block pb-2 border-b border-linen-200">
-                Panduan Peserta Pilot PindahTangan
+                Layanan Konsinyasi PindahTangan
               </span>
               <ul className="space-y-3 text-espresso-800 leading-relaxed">
                 <li className="flex items-start gap-2">
                   <span className="text-terracotta-600 font-bold">•</span>
-                  <span><strong>Petunjuk Langkah per Item:</strong> Setiap pakaian diproses secara terpisah, QC dan harga konfirmasi bersama.</span>
+                  <span><strong>Penjemputan Pintu ke Pintu:</strong> Pakaian diambil langsung ke rumah di Sukabumi.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-terracotta-600 font-bold">•</span>
-                  <span><strong>Siaran Live Bersama:</strong> Host dan pilot participant menampilkan item secara dinamis.</span>
+                  <span><strong>Higienitas Terjamin:</strong> Cuci uap panas &gt;100°C gratis di awal (biaya uap dipotong hanya saat laku).</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-terracotta-600 font-bold">•</span>
-                  <span><strong>Konfirmasi Pencairan Tertulis:</strong> Setiap pembayaran dan transfer divalidasi bersama sebelum dikirim.</span>
+                  <span><strong>Penjualan Live Interaktif:</strong> Host profesional memamerkan pakaian di TikTok secara dinamis.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-terracotta-600 font-bold">•</span>
-                  <span><strong>Tidak Ada Janji Rutin:</strong> Setiap jadwal, penyerahan, dan transfer akan dikonfirmasi per pilot participant.</span>
+                  <span><strong>Gajian Mingguan Terjadwal:</strong> Uang masuk ke rekening bank tiap Jumat sore pukul 16.00 WIB.</span>
                 </li>
               </ul>
             </div>

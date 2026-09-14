@@ -10,7 +10,7 @@ import { ArrowUpRight, Check, MessageCircle } from 'lucide-react';
 function BookingFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { store, setActiveUser } = useStore();
+  const { store, setActiveUser, activeUser, isLoggedIn } = useStore();
 
   const refParam = searchParams.get('ref') || '';
   const initialCount = searchParams.get('count') ? Number(searchParams.get('count')) : 25;
@@ -26,6 +26,18 @@ function BookingFormContent() {
     notes: '',
     referralCode: refParam,
   });
+
+  React.useEffect(() => {
+    if (isLoggedIn && activeUser && activeUser.role === 'consignor') {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: prev.fullName || activeUser.full_name || '',
+        phoneNumber: prev.phoneNumber || activeUser.phone_number || '',
+        district: prev.district === SUKABUMI_DISTRICTS[0] && activeUser.district ? activeUser.district : prev.district,
+        pickupAddress: prev.pickupAddress || activeUser.address || '',
+      }));
+    }
+  }, [isLoggedIn, activeUser]);
 
   const [successBatch, setSuccessBatch] = useState<{
     batchCode: string;
