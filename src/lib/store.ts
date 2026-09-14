@@ -247,8 +247,12 @@ export const SEED_ITEMS: ClothesItem[] = [
     size: 'M',
     chest_width_cm: 72,
     category_tier: 'tier_a',
-    floor_price: 55000,
-    target_live_price: 85000,
+    pricing_model: 'commission_split',
+    item_type_category: 'rok',
+    consignor_asking_price: 100000,
+    commission_rate_percent: 15,
+    floor_price: 85000,
+    target_live_price: 100000,
     steam_fee: 2500,
     status: 'in_live_queue',
     photo_url: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=800&q=80',
@@ -336,8 +340,12 @@ export const SEED_ITEMS: ClothesItem[] = [
     size: 'M',
     chest_width_cm: 74,
     category_tier: 'tier_b',
-    floor_price: 35000,
-    target_live_price: 55000,
+    pricing_model: 'commission_split',
+    item_type_category: 'celana',
+    consignor_asking_price: 80000,
+    commission_rate_percent: 10,
+    floor_price: 72000,
+    target_live_price: 80000,
     steam_fee: 2500,
     status: 'in_steam',
     photo_url: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&q=80',
@@ -1091,6 +1099,10 @@ export class PindahTanganStore {
     defectPhotoUrl?: string;
     isSteamed?: boolean;
     rackLocation?: string;
+    pricingModel?: 'tier_flat' | 'commission_split';
+    consignorAskingPrice?: number;
+    commissionRatePercent?: number;
+    itemTypeCategory?: string;
   }): ClothesItem {
     const hangtag = this.data.items.length + 1;
     const consignorIdx = Math.floor(1 + Math.random() * 99);
@@ -1111,6 +1123,10 @@ export class PindahTanganStore {
         category_tier: params.categoryTier,
         floor_price: params.floorPrice,
         target_live_price: params.targetLivePrice,
+        pricing_model: params.pricingModel || 'tier_flat',
+        consignor_asking_price: params.consignorAskingPrice,
+        commission_rate_percent: params.commissionRatePercent,
+        item_type_category: params.itemTypeCategory,
         steam_fee: BUSINESS_RULES.STEAM_FEE_PER_PIECE,
         status: params.isSteamed ? 'ready_for_live' : 'in_steam',
         rack_location: params.rackLocation || 'RACK-A1',
@@ -1177,6 +1193,10 @@ export class PindahTanganStore {
     floorPrice: number;
     targetLivePrice: number;
     photoUrl?: string;
+    pricingModel?: 'tier_flat' | 'commission_split';
+    consignorAskingPrice?: number;
+    commissionRatePercent?: number;
+    itemTypeCategory?: string;
   }): ClothesItem {
     const hangtag = this.data.items.length + 1;
     const consignorIdx = Math.floor(1 + Math.random() * 99);
@@ -1195,6 +1215,10 @@ export class PindahTanganStore {
       category_tier: params.categoryTier,
       floor_price: params.floorPrice,
       target_live_price: params.targetLivePrice,
+      pricing_model: params.pricingModel || 'tier_flat',
+      consignor_asking_price: params.consignorAskingPrice,
+      commission_rate_percent: params.commissionRatePercent,
+      item_type_category: params.itemTypeCategory,
       steam_fee: BUSINESS_RULES.STEAM_FEE_PER_PIECE,
       status: 'ready_for_live',
       photo_url:

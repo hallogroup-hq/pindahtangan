@@ -73,8 +73,16 @@ export default function ValueEstimator() {
                 <div className="font-serif text-3xl sm:text-4xl font-normal text-espresso-900 tracking-tight">
                   {formatIDR(estimatedMinNet)} — {formatIDR(estimatedMaxNet)}
                 </div>
-                <p className="text-[11px] text-espresso-500 font-sans">
-                  *Berdasarkan rentang hak bersih pemilik: Tier A (Rp 25rb–45rb), Tier B (Rp 15rb–35rb), Tier C (Rp 5rb–15rb). Khusus celana/kemeja/tas/sepatu dinilai fleksibel bersama kurator.
+                <div className="pt-2 flex flex-wrap gap-2 text-[10px] font-mono">
+                  <span className="px-2.5 py-1 rounded-full bg-linen-200/80 text-espresso-800 font-medium">
+                    👕 Kaos &amp; Tops: Flat Tier (5k–45k)
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full bg-terracotta-100/80 text-terracotta-900 font-medium">
+                    👖 Celana / Jaket / Tas / Sepatu: Komisi 10%–15%
+                  </span>
+                </div>
+                <p className="text-[11px] text-espresso-500 font-sans pt-1">
+                  *Untuk kaos &amp; atasan berlaku hak bersih Flat Tier (Tier A: 25k–45k, B: 15k–35k, C: 5k–15k). Untuk celana, rok, jaket, tas, dan sepatu, kamu bebas tentukan harga jual sendiri dan platform hanya memotong komisi 10%–15%.
                 </p>
               </div>
 

@@ -443,40 +443,87 @@ export default function ConsignorPortalPage() {
                         <div className="flex items-center gap-2 text-xs text-espresso-600 font-sans flex-wrap">
                           <span className="font-medium">Size {item.size || 'All Size'}</span>
                           {item.chest_width_cm && <span>• LD {item.chest_width_cm} cm</span>}
-                          <span className="text-terracotta-700 font-medium">• {tierMeta?.qualityLabel || tierMeta?.label.split(' • ')[0]}</span>
+                          {item.pricing_model === 'commission_split' ? (
+                            <span className="text-terracotta-700 font-medium">
+                              • Komisi {item.commission_rate_percent || 15}% ({item.item_type_category || 'Celana/Jaket'})
+                            </span>
+                          ) : (
+                            <span className="text-terracotta-700 font-medium">
+                              • {tierMeta?.qualityLabel || tierMeta?.label.split(' • ')[0]}
+                            </span>
+                          )}
                         </div>
 
                         {/* Price Breakdown */}
-                        <div className="pt-3 border-t border-linen-200 flex justify-between items-baseline">
-                          <div>
-                            <span className="text-[9px] font-mono uppercase tracking-wider text-espresso-400 block">
-                              Hak Bersih Consignor
-                            </span>
-                            <span className="font-serif text-base font-medium text-espresso-900">
-                              {formatIDR(item.floor_price)}
-                            </span>
+                        {item.pricing_model === 'commission_split' ? (
+                          <div className="pt-3 border-t border-linen-200 space-y-1.5">
+                            <div className="flex justify-between items-baseline text-xs">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-espresso-500">
+                                Harga Jual Anda
+                              </span>
+                              <span className="font-serif text-sm font-semibold text-espresso-950">
+                                {formatIDR(item.consignor_asking_price || item.target_live_price)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-baseline text-xs">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-terracotta-600 font-medium">
+                                Komisi PT ({item.commission_rate_percent || 15}%)
+                              </span>
+                              <span className="font-mono text-xs text-terracotta-700">
+                                -{formatIDR(Math.round(((item.consignor_asking_price || item.target_live_price) * (item.commission_rate_percent || 15)) / 100))}
+                              </span>
+                            </div>
+                            <div className="flex justify-between items-baseline pt-1 border-t border-linen-200">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-700 font-bold">
+                                Hak Bersih Pemilik (Floor)
+                              </span>
+                              <span className="font-serif text-base font-bold text-emerald-800">
+                                {formatIDR(item.floor_price)}
+                              </span>
+                            </div>
+                            {item.sold_price && (
+                              <div className="flex justify-between items-baseline text-xs pt-1">
+                                <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-600">
+                                  Laku Live TikTok
+                                </span>
+                                <span className="font-serif text-sm font-medium text-emerald-800">
+                                  {formatIDR(item.sold_price)}
+                                </span>
+                              </div>
+                            )}
                           </div>
-
-                          {item.sold_price ? (
-                            <div className="text-right">
-                              <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-700 block">
-                                Laku Live TikTok
-                              </span>
-                              <span className="font-serif text-base font-medium text-emerald-800">
-                                {formatIDR(item.sold_price)}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="text-right">
+                        ) : (
+                          <div className="pt-3 border-t border-linen-200 flex justify-between items-baseline">
+                            <div>
                               <span className="text-[9px] font-mono uppercase tracking-wider text-espresso-400 block">
-                                Estimasi Buka Live
+                                Hak Bersih Consignor
                               </span>
-                              <span className="text-xs font-mono text-espresso-600">
-                                {formatIDR(item.target_live_price)}
+                              <span className="font-serif text-base font-medium text-espresso-900">
+                                {formatIDR(item.floor_price)}
                               </span>
                             </div>
-                          )}
-                        </div>
+
+                            {item.sold_price ? (
+                              <div className="text-right">
+                                <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-700 block">
+                                  Laku Live TikTok
+                                </span>
+                                <span className="font-serif text-base font-medium text-emerald-800">
+                                  {formatIDR(item.sold_price)}
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="text-right">
+                                <span className="text-[9px] font-mono uppercase tracking-wider text-espresso-400 block">
+                                  Estimasi Buka Live
+                                </span>
+                                <span className="text-xs font-mono text-espresso-600">
+                                  {formatIDR(item.target_live_price)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {item.status === 'sold' && (
                           <div className="text-[10px] font-mono text-emerald-800 bg-emerald-50/70 p-2 rounded border border-emerald-200">

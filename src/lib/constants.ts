@@ -51,8 +51,32 @@ export const TIER_CONFIG = {
   },
 };
 
+export const COMMISSION_CONFIG = {
+  categories: [
+    { id: 'celana', label: 'Celana (Jeans/Chino/Kulot/Pants)' },
+    { id: 'rok', label: 'Rok (Midi/Maxi/Plisket/Skirt)' },
+    { id: 'jaket', label: 'Jaket / Outerwear / Blazer / Hoodie' },
+    { id: 'tas', label: 'Tas / Ransel / Handbag / Totebag' },
+    { id: 'sepatu', label: 'Sepatu / Sneakers / Heels / Flat' },
+    { id: 'kemeja', label: 'Kemeja / Blouse Formal' },
+    { id: 'lainnya', label: 'Kategori Lainnya' },
+  ],
+  defaultCommissionPercent: 15,
+  availableCommissionRates: [10, 15],
+  calculateCommissionSplit: (consignorAskingPrice: number, commissionPercent: number = 15) => {
+    const commissionFee = Math.round((consignorAskingPrice * commissionPercent) / 100);
+    const floorPrice = consignorAskingPrice - commissionFee;
+    return {
+      targetLivePrice: consignorAskingPrice, // Harga jual umum = harga pemilik barang
+      commissionFee,                         // 10-15% ke PindahTangan
+      floorPrice,                            // Hak bersih dasar pemilik barang
+      consignorNetAfterSteam: Math.max(0, floorPrice - 2500), // Transfer bersih setelah uap
+    };
+  },
+};
+
 export const SPECIAL_CATEGORY_NOTE =
-  'Rentang harga floor di atas berlaku untuk kaos, crop top, oversized tee, dll. Untuk celana, kemeja, sepatu, tas, dll. nilai floor dapat disepakati tersendiri bersama kurator studio saat intake.';
+  'Untuk celana, rok, jaket, tas, sepatu, kemeja dll: Harga jual ke umum mengikuti harga yang ditentukan pemilik barang, dipotong 10% – 15% komisi untuk PindahTangan.';
 
 export const SUKABUMI_DISTRICTS = [
   'Kecamatan Cikole',

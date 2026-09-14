@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/lib/useStore';
-import { IntakeBatch, ClothesItem, TierCategory } from '@/lib/types';
+import { IntakeBatch, ClothesItem, TierCategory, PricingModel } from '@/lib/types';
 import { formatIDR, formatDateIndo } from '@/lib/utils';
-import { TIER_CONFIG, STATUS_LABELS } from '@/lib/constants';
+import { TIER_CONFIG, STATUS_LABELS, COMMISSION_CONFIG } from '@/lib/constants';
 import {
   PackageCheck,
   Sparkles,
@@ -35,13 +35,17 @@ export default function IntakeQCModule() {
 
   // QC Form state
   const [selectedBatchId, setSelectedBatchId] = useState<string>(data.batches[0]?.id || '');
+  const [pricingModel, setPricingModel] = useState<PricingModel>('tier_flat');
+  const [itemTypeCategory, setItemTypeCategory] = useState<string>('celana');
+  const [consignorAskingPrice, setConsignorAskingPrice] = useState<number>(100000);
+  const [commissionRatePercent, setCommissionRatePercent] = useState<number>(15);
   const [itemTitle, setItemTitle] = useState('');
   const [itemBrand, setItemBrand] = useState('Zara');
   const [itemSize, setItemSize] = useState('M');
   const [itemChestWidth, setItemChestWidth] = useState<number>(96);
   const [itemTier, setItemTier] = useState<TierCategory>('tier_a');
-  const [itemFloorPrice, setItemFloorPrice] = useState<number>(60000);
-  const [itemTargetPrice, setItemTargetPrice] = useState<number>(89000);
+  const [itemFloorPrice, setItemFloorPrice] = useState<number>(35000);
+  const [itemTargetPrice, setItemTargetPrice] = useState<number>(49000);
   const [rackLocation, setRackLocation] = useState('RACK-A1');
   const [isSteamed, setIsSteamed] = useState(true);
 
@@ -140,16 +144,24 @@ export default function IntakeQCModule() {
         }
       }
 
+      const split = COMMISSION_CONFIG.calculateCommissionSplit(consignorAskingPrice, commissionRatePercent);
+      const finalFloor = pricingModel === 'commission_split' ? split.floorPrice : Number(itemFloorPrice);
+      const finalTarget = pricingModel === 'commission_split' ? split.targetLivePrice : Number(itemTargetPrice);
+
       const passedItem = store.inspectQCItem({
         batchId: batch.id,
         consignorId: batch.consignor_id,
-        title: itemTitle || `${itemBrand} ${itemTier.toUpperCase()} Pilihan`,
+        title: itemTitle || `${itemBrand} ${pricingModel === 'commission_split' ? itemTypeCategory.toUpperCase() : itemTier.toUpperCase()} Pilihan`,
         brand: itemBrand,
         size: itemSize,
         chestWidthCm: Number(itemChestWidth) || undefined,
         categoryTier: itemTier,
-        floorPrice: Number(itemFloorPrice),
-        targetLivePrice: Number(itemTargetPrice),
+        floorPrice: finalFloor,
+        targetLivePrice: finalTarget,
+        pricingModel,
+        consignorAskingPrice: pricingModel === 'commission_split' ? consignorAskingPrice : undefined,
+        commissionRatePercent: pricingModel === 'commission_split' ? commissionRatePercent : undefined,
+        itemTypeCategory,
         passedQC: true,
         isSteamed,
         rackLocation,
@@ -541,74 +553,196 @@ export default function IntakeQCModule() {
                 </div>
               </div>
 
-              {/* Tier Selection */}
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-espresso-600 mb-1.5">
-                  Kategori Tier Kurasi:
+              {/* Pricing Scheme Switcher */}
+              <div className="space-y-2 pt-1 border-t border-linen-200">
+                <label className="block text-xs font-mono uppercase tracking-wider text-espresso-700 font-semibold">
+                  Skema Penentuan Harga:
                 </label>
-                <div className="grid grid-cols-3 gap-2.5">
-                  {(['tier_a', 'tier_b', 'tier_c'] as TierCategory[]).map((tier) => {
-                    const cfg = TIER_CONFIG[tier];
-                    const isSelected = itemTier === tier;
-                    return (
-                      <button
-                        key={tier}
-                        type="button"
-                        onClick={() => handleTierSelect(tier)}
-                        className={`p-2.5 rounded-xl border text-left transition ${
-                          isSelected
-                            ? 'border-espresso-900 bg-linen-200/90 shadow-xs'
-                            : 'border-linen-300 bg-linen-100/40 hover:bg-linen-100'
-                        }`}
-                      >
-                        <span className="font-serif text-xs font-semibold text-espresso-900 block truncate">
-                          {cfg.label}
-                        </span>
-                        <span className="text-[10px] font-mono text-terracotta-700 font-medium block">
-                          Floor: {cfg.floorPriceRange}
-                        </span>
-                      </button>
-                    );
-                  })}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPricingModel('tier_flat')}
+                    className={`p-2.5 rounded-xl border text-left transition text-xs ${
+                      pricingModel === 'tier_flat'
+                        ? 'border-espresso-900 bg-espresso-900 text-linen-50 font-medium shadow-sm'
+                        : 'border-linen-300 bg-white text-espresso-700 hover:bg-linen-100'
+                    }`}
+                  >
+                    <span className="block font-semibold">👕 Kaos / Croptop / Oversized</span>
+                    <span className="text-[10px] opacity-80 block">Flat Tier Kurasi (5k – 45k)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPricingModel('commission_split')}
+                    className={`p-2.5 rounded-xl border text-left transition text-xs ${
+                      pricingModel === 'commission_split'
+                        ? 'border-espresso-900 bg-espresso-900 text-linen-50 font-medium shadow-sm'
+                        : 'border-linen-300 bg-white text-espresso-700 hover:bg-linen-100'
+                    }`}
+                  >
+                    <span className="block font-semibold">👖 Celana / Rok / Jaket / Tas</span>
+                    <span className="text-[10px] opacity-80 block">Komisi 10%–15% dari Pemilik</span>
+                  </button>
                 </div>
-                <p className="text-[10px] text-espresso-500 mt-1.5 font-sans">
-                  *Acuan floor berlaku untuk kaos, croptop, oversized, dll. Untuk celana, kemeja, sepatu, tas, dll. nilai floor dapat disesuaikan manual pada isian di bawah.
-                </p>
               </div>
 
-              {/* Pricing Form */}
-              <div className="grid grid-cols-2 gap-4 p-3.5 bg-linen-100/60 rounded-xl border border-linen-200">
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-espresso-700 mb-1">
-                    Floor Price (Hak Penitip):
-                  </label>
-                  <input
-                    type="number"
-                    step={5000}
-                    value={itemFloorPrice}
-                    onChange={(e) => setItemFloorPrice(Number(e.target.value))}
-                    className="w-full text-xs font-mono font-semibold bg-white border border-linen-300 rounded-lg p-2 text-espresso-900"
-                  />
-                  <span className="text-[10px] text-espresso-500 block mt-0.5">
-                    Bersih setelah uap: {formatIDR(Math.max(0, itemFloorPrice - 2500))}
-                  </span>
+              {/* MODEL 1: FLAT TIER KURASI */}
+              {pricingModel === 'tier_flat' ? (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-mono uppercase tracking-wider text-espresso-600 mb-1.5">
+                      Kategori Tier Kurasi:
+                    </label>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {(['tier_a', 'tier_b', 'tier_c'] as TierCategory[]).map((tier) => {
+                        const cfg = TIER_CONFIG[tier];
+                        const isSelected = itemTier === tier;
+                        return (
+                          <button
+                            key={tier}
+                            type="button"
+                            onClick={() => handleTierSelect(tier)}
+                            className={`p-2.5 rounded-xl border text-left transition ${
+                              isSelected
+                                ? 'border-espresso-900 bg-linen-200/90 shadow-xs'
+                                : 'border-linen-300 bg-linen-100/40 hover:bg-linen-100'
+                            }`}
+                          >
+                            <span className="font-serif text-xs font-semibold text-espresso-900 block truncate">
+                              {cfg.label}
+                            </span>
+                            <span className="text-[10px] font-mono text-terracotta-700 font-medium block">
+                              Floor: {cfg.floorPriceRange}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Pricing Form */}
+                  <div className="grid grid-cols-2 gap-4 p-3.5 bg-linen-100/60 rounded-xl border border-linen-200">
+                    <div>
+                      <label className="block text-[11px] font-mono uppercase tracking-wider text-espresso-700 mb-1">
+                        Floor Price (Hak Penitip):
+                      </label>
+                      <input
+                        type="number"
+                        step={5000}
+                        value={itemFloorPrice}
+                        onChange={(e) => setItemFloorPrice(Number(e.target.value))}
+                        className="w-full text-xs font-mono font-semibold bg-white border border-linen-300 rounded-lg p-2 text-espresso-900"
+                      />
+                      <span className="text-[10px] text-espresso-500 block mt-0.5">
+                        Bersih setelah uap: {formatIDR(Math.max(0, itemFloorPrice - 2500))}
+                      </span>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-mono uppercase tracking-wider text-espresso-700 mb-1">
+                        Target Live Price (Host):
+                      </label>
+                      <input
+                        type="number"
+                        step={5000}
+                        value={itemTargetPrice}
+                        onChange={(e) => setItemTargetPrice(Number(e.target.value))}
+                        className="w-full text-xs font-mono font-semibold bg-white border border-linen-300 rounded-lg p-2 text-espresso-900"
+                      />
+                      <span className="text-[10px] text-terracotta-700 block mt-0.5 font-medium">
+                        Estimasi Margin: {formatIDR(itemTargetPrice - itemFloorPrice + 2500)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-[11px] font-mono uppercase tracking-wider text-espresso-700 mb-1">
-                    Target Live Price (Host):
-                  </label>
-                  <input
-                    type="number"
-                    step={5000}
-                    value={itemTargetPrice}
-                    onChange={(e) => setItemTargetPrice(Number(e.target.value))}
-                    className="w-full text-xs font-mono font-semibold bg-white border border-linen-300 rounded-lg p-2 text-espresso-900"
-                  />
-                  <span className="text-[10px] text-terracotta-700 block mt-0.5 font-medium">
-                    Estimasi Margin: {formatIDR(itemTargetPrice - itemFloorPrice + 2500)}
-                  </span>
+              ) : (
+                /* MODEL 2: KOMISI KONSINYASI 10-15% DARI PEMILIK */
+                <div className="space-y-3.5 p-4 bg-terracotta-50/40 border border-terracotta-200 rounded-2xl">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-wider text-espresso-700 font-semibold mb-1">
+                        Kategori Barang:
+                      </label>
+                      <select
+                        value={itemTypeCategory}
+                        onChange={(e) => setItemTypeCategory(e.target.value)}
+                        className="w-full text-xs bg-white border border-linen-300 rounded-xl p-2.5 text-espresso-900 font-medium cursor-pointer"
+                      >
+                        {COMMISSION_CONFIG.categories.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-wider text-espresso-700 font-semibold mb-1">
+                        Potongan Komisi PindahTangan:
+                      </label>
+                      <div className="flex gap-2">
+                        {COMMISSION_CONFIG.availableCommissionRates.map((rate) => (
+                          <button
+                            key={rate}
+                            type="button"
+                            onClick={() => setCommissionRatePercent(rate)}
+                            className={`flex-1 py-2 rounded-xl text-xs font-bold border transition ${
+                              commissionRatePercent === rate
+                                ? 'bg-terracotta-600 text-white border-terracotta-700 shadow-sm'
+                                : 'bg-white text-espresso-800 border-linen-300 hover:bg-linen-100'
+                            }`}
+                          >
+                            Potong {rate}%
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono uppercase tracking-wider text-espresso-800 font-semibold mb-1">
+                      Harga Jual dari Pemilik Barang:
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-serif text-sm text-espresso-500 font-medium">
+                        Rp
+                      </span>
+                      <input
+                        type="number"
+                        step={5000}
+                        value={consignorAskingPrice}
+                        onChange={(e) => setConsignorAskingPrice(Number(e.target.value))}
+                        className="w-full pl-10 pr-4 py-2.5 text-base font-serif font-semibold bg-white border border-linen-300 rounded-xl text-espresso-900 focus:outline-none focus:border-terracotta-600"
+                        placeholder="Contoh: 100000"
+                      />
+                    </div>
+                    <p className="text-[10px] text-espresso-500 mt-1 font-sans">
+                      *Harga jual ke umum (live &amp; katalog) tetap menggunakan harga jual dari pemilik ini.
+                    </p>
+                  </div>
+
+                  {/* Auto Split Calculation Summary */}
+                  {(() => {
+                    const split = COMMISSION_CONFIG.calculateCommissionSplit(consignorAskingPrice, commissionRatePercent);
+                    return (
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-terracotta-200/70 text-xs">
+                        <div className="p-2.5 bg-white rounded-xl border border-linen-200">
+                          <span className="text-[9px] font-mono text-espresso-400 block uppercase">Harga Jual Umum</span>
+                          <span className="font-serif text-sm font-semibold text-espresso-950">{formatIDR(split.targetLivePrice)}</span>
+                        </div>
+                        <div className="p-2.5 bg-white rounded-xl border border-terracotta-200">
+                          <span className="text-[9px] font-mono text-terracotta-600 block uppercase font-medium">Fee PindahTangan ({commissionRatePercent}%)</span>
+                          <span className="font-serif text-sm font-semibold text-terracotta-700">+{formatIDR(split.commissionFee)}</span>
+                        </div>
+                        <div className="p-2.5 bg-white rounded-xl border border-emerald-200">
+                          <span className="text-[9px] font-mono text-emerald-700 block uppercase font-medium">Hak Pemilik (Floor)</span>
+                          <span className="font-serif text-sm font-bold text-emerald-800">{formatIDR(split.floorPrice)}</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
-              </div>
+              )}
 
               {/* PASS MODE: 5 QC Parameter Checklist */}
               {!isRejectMode && (

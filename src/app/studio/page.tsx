@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/lib/useStore';
-import { TIER_CONFIG, STATUS_LABELS } from '@/lib/constants';
+import { TIER_CONFIG, STATUS_LABELS, COMMISSION_CONFIG } from '@/lib/constants';
+import { PricingModel } from '@/lib/types';
 import { formatIDR } from '@/lib/utils';
 import { Check, AlertTriangle, Printer, ArrowRight } from 'lucide-react';
 
@@ -26,6 +27,10 @@ export default function StudioOperatorPage() {
     categoryTier: 'tier_b' as 'tier_a' | 'tier_b' | 'tier_c',
     floorPrice: 35000,
     targetLivePrice: 55000,
+    pricingModel: 'tier_flat' as PricingModel,
+    consignorAskingPrice: 100000,
+    commissionRatePercent: 15,
+    itemTypeCategory: 'celana',
     isPassed: true,
     defectReason: 'Noda permanen',
     defectNotes: '',
@@ -80,16 +85,45 @@ export default function StudioOperatorPage() {
     }
 
     if (qcForm.isPassed) {
+      const split = COMMISSION_CONFIG.calculateCommissionSplit(
+        qcForm.consignorAskingPrice,
+        qcForm.commissionRatePercent
+      );
+      const finalFloor =
+        qcForm.pricingModel === 'commission_split'
+          ? split.floorPrice
+          : qcForm.floorPrice;
+      const finalTarget =
+        qcForm.pricingModel === 'commission_split'
+          ? split.targetLivePrice
+          : qcForm.targetLivePrice;
+
       const item = store.qcPassItem({
         batchId: selectedBatch.id,
         consignorId: consignor.id,
-        title: qcForm.title || `${qcForm.brand} ${qcForm.categoryTier.toUpperCase()}`,
+        title:
+          qcForm.title ||
+          `${qcForm.brand} ${
+            qcForm.pricingModel === 'commission_split'
+              ? qcForm.itemTypeCategory.toUpperCase()
+              : qcForm.categoryTier.toUpperCase()
+          }`,
         brand: qcForm.brand || 'Lokal',
         size: qcForm.size,
         chestWidthCm: qcForm.chestWidthCm,
         categoryTier: qcForm.categoryTier,
-        floorPrice: qcForm.floorPrice,
-        targetLivePrice: qcForm.targetLivePrice,
+        floorPrice: finalFloor,
+        targetLivePrice: finalTarget,
+        pricingModel: qcForm.pricingModel,
+        consignorAskingPrice:
+          qcForm.pricingModel === 'commission_split'
+            ? qcForm.consignorAskingPrice
+            : undefined,
+        commissionRatePercent:
+          qcForm.pricingModel === 'commission_split'
+            ? qcForm.commissionRatePercent
+            : undefined,
+        itemTypeCategory: qcForm.itemTypeCategory,
         photoUrl: qcForm.photoUrl,
       });
 
@@ -308,64 +342,192 @@ export default function StudioOperatorPage() {
                           className="w-full px-3 py-2.5 rounded-xl border border-linen-200 bg-linen-50/40 text-espresso-900 font-mono text-xs focus:outline-none focus:border-espresso-900"
                         />
                       </div>
+                    </div>
 
-                      <div className="space-y-1.5">
-                        <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
-                          Tier Jadwal
-                        </label>
-                        <select
-                          value={qcForm.categoryTier}
-                          onChange={(e) =>
-                            handleTierChange(e.target.value as 'tier_a' | 'tier_b' | 'tier_c')
-                          }
-                          className="w-full px-3 py-2.5 rounded-xl border border-linen-200 bg-linen-50/40 text-espresso-900 text-xs focus:outline-none focus:border-espresso-900"
+                    {/* Skema Penentuan Harga */}
+                    <div className="space-y-2 pt-2 border-t border-linen-200">
+                      <label className="block font-mono text-[10px] uppercase tracking-wider text-espresso-700 font-semibold">
+                        Skema Penentuan Harga:
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <button
+                          type="button"
+                          onClick={() => setQcForm((prev) => ({ ...prev, pricingModel: 'tier_flat' }))}
+                          className={`p-3 rounded-xl border text-left transition text-xs ${
+                            qcForm.pricingModel === 'tier_flat'
+                              ? 'border-espresso-900 bg-espresso-900 text-linen-50 font-medium shadow-sm'
+                              : 'border-linen-300 bg-white text-espresso-700 hover:bg-linen-100'
+                          }`}
                         >
-                          <option value="tier_a">Tier A (Very Good Quality • 25k–45k)</option>
-                          <option value="tier_b">Tier B (Good Quality • 15k–35k)</option>
-                          <option value="tier_c">Tier C (Minor Dikit • 5k–15k)</option>
-                        </select>
+                          <span className="block font-semibold">👕 Kaos / Croptop / Tops</span>
+                          <span className="text-[10px] opacity-80 block">Flat Tier Kurasi (5k – 45k)</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setQcForm((prev) => ({ ...prev, pricingModel: 'commission_split' }))}
+                          className={`p-3 rounded-xl border text-left transition text-xs ${
+                            qcForm.pricingModel === 'commission_split'
+                              ? 'border-espresso-900 bg-espresso-900 text-linen-50 font-medium shadow-sm'
+                              : 'border-linen-300 bg-white text-espresso-700 hover:bg-linen-100'
+                          }`}
+                        >
+                          <span className="block font-semibold">👖 Celana / Rok / Jaket / Tas / Sepatu</span>
+                          <span className="text-[10px] opacity-80 block">Komisi 10%–15% dari Pemilik</span>
+                        </button>
                       </div>
                     </div>
 
-                    {/* Price Setup */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 rounded-xl bg-linen-50 border border-linen-200">
-                      <div className="space-y-1">
-                        <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
-                          Floor Price Consignor *
-                        </label>
-                        <span className="text-[10px] text-espresso-400 block">
-                          Kisaran: {TIER_CONFIG[qcForm.categoryTier].floorPriceRange}
-                        </span>
-                        <input
-                          type="number"
-                          step={5000}
-                          value={qcForm.floorPrice}
-                          onChange={(e) => handleFloorPriceChange(Number(e.target.value))}
-                          className="w-full px-4 py-2.5 rounded-xl border border-linen-300 bg-white font-serif text-xl font-normal text-espresso-900"
-                        />
-                      </div>
+                    {qcForm.pricingModel === 'tier_flat' ? (
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
+                            Tier Kurasi Pakaian
+                          </label>
+                          <select
+                            value={qcForm.categoryTier}
+                            onChange={(e) =>
+                              handleTierChange(e.target.value as 'tier_a' | 'tier_b' | 'tier_c')
+                            }
+                            className="w-full px-3 py-2.5 rounded-xl border border-linen-200 bg-linen-50/40 text-espresso-900 text-xs focus:outline-none focus:border-espresso-900"
+                          >
+                            <option value="tier_a">Tier A (Very Good Quality • 25k–45k)</option>
+                            <option value="tier_b">Tier B (Good Quality • 15k–35k)</option>
+                            <option value="tier_c">Tier C (Minor Dikit • 5k–15k)</option>
+                          </select>
+                        </div>
 
-                      <div className="space-y-1">
-                        <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
-                          Rekomendasi Buka Live *
-                        </label>
-                        <span className="text-[10px] text-espresso-400 block">
-                          Margin Platform: {formatIDR(qcForm.targetLivePrice - qcForm.floorPrice + 2500)}
-                        </span>
-                        <input
-                          type="number"
-                          step={5000}
-                          value={qcForm.targetLivePrice}
-                          onChange={(e) =>
-                            setQcForm({ ...qcForm, targetLivePrice: Number(e.target.value) })
-                          }
-                          className="w-full px-4 py-2.5 rounded-xl border border-linen-300 bg-white font-serif text-xl font-normal text-espresso-900"
-                        />
+                        {/* Price Setup */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 rounded-xl bg-linen-50 border border-linen-200">
+                          <div className="space-y-1">
+                            <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
+                              Floor Price Consignor *
+                            </label>
+                            <span className="text-[10px] text-espresso-400 block">
+                              Kisaran: {TIER_CONFIG[qcForm.categoryTier].floorPriceRange}
+                            </span>
+                            <input
+                              type="number"
+                              step={5000}
+                              value={qcForm.floorPrice}
+                              onChange={(e) => handleFloorPriceChange(Number(e.target.value))}
+                              className="w-full px-4 py-2.5 rounded-xl border border-linen-300 bg-white font-serif text-xl font-normal text-espresso-900"
+                            />
+                            <span className="text-[10px] text-espresso-500 block">
+                              Bersih setelah uap: {formatIDR(Math.max(0, qcForm.floorPrice - 2500))}
+                            </span>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="font-mono text-[10px] uppercase tracking-wider text-espresso-600 block">
+                              Rekomendasi Buka Live *
+                            </label>
+                            <span className="text-[10px] text-espresso-400 block">
+                              Margin Platform: {formatIDR(qcForm.targetLivePrice - qcForm.floorPrice + 2500)}
+                            </span>
+                            <input
+                              type="number"
+                              step={5000}
+                              value={qcForm.targetLivePrice}
+                              onChange={(e) =>
+                                setQcForm({ ...qcForm, targetLivePrice: Number(e.target.value) })
+                              }
+                              className="w-full px-4 py-2.5 rounded-xl border border-linen-300 bg-white font-serif text-xl font-normal text-espresso-900"
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <p className="text-[10px] text-espresso-500 font-sans">
-                      *Rentang floor di atas adalah acuan kaos, crop top, oversized, dll. Untuk celana, kemeja, sepatu, tas dapat disesuaikan nilai floor-nya.
-                    </p>
+                    ) : (
+                      /* MODEL 2: KOMISI KONSINYASI 10-15% */
+                      <div className="space-y-4 p-5 bg-terracotta-50/40 border border-terracotta-200 rounded-2xl">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-mono uppercase tracking-wider text-espresso-700 font-semibold mb-1">
+                              Kategori Barang:
+                            </label>
+                            <select
+                              value={qcForm.itemTypeCategory}
+                              onChange={(e) => setQcForm({ ...qcForm, itemTypeCategory: e.target.value })}
+                              className="w-full text-xs bg-white border border-linen-300 rounded-xl p-2.5 text-espresso-900 font-medium cursor-pointer"
+                            >
+                              {COMMISSION_CONFIG.categories.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                  {c.label}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-mono uppercase tracking-wider text-espresso-700 font-semibold mb-1">
+                              Potongan Komisi PindahTangan:
+                            </label>
+                            <div className="flex gap-2">
+                              {COMMISSION_CONFIG.availableCommissionRates.map((rate) => (
+                                <button
+                                  key={rate}
+                                  type="button"
+                                  onClick={() => setQcForm({ ...qcForm, commissionRatePercent: rate })}
+                                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold border transition ${
+                                    qcForm.commissionRatePercent === rate
+                                      ? 'bg-terracotta-600 text-white border-terracotta-700 shadow-sm'
+                                      : 'bg-white text-espresso-800 border-linen-300 hover:bg-linen-100'
+                                  }`}
+                                >
+                                  Potong {rate}%
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-mono uppercase tracking-wider text-espresso-800 font-semibold mb-1">
+                            Harga Jual dari Pemilik Barang:
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-serif text-sm text-espresso-500 font-medium">
+                              Rp
+                            </span>
+                            <input
+                              type="number"
+                              step={5000}
+                              value={qcForm.consignorAskingPrice}
+                              onChange={(e) => setQcForm({ ...qcForm, consignorAskingPrice: Number(e.target.value) })}
+                              className="w-full pl-10 pr-4 py-2.5 text-base font-serif font-semibold bg-white border border-linen-300 rounded-xl text-espresso-900 focus:outline-none focus:border-terracotta-600"
+                              placeholder="Contoh: 100000"
+                            />
+                          </div>
+                          <p className="text-[10px] text-espresso-500 mt-1 font-sans">
+                            *Harga jual ke umum (live &amp; katalog) tetap menggunakan harga jual dari pemilik ini.
+                          </p>
+                        </div>
+
+                        {/* Live Auto Split Breakdown */}
+                        {(() => {
+                          const split = COMMISSION_CONFIG.calculateCommissionSplit(
+                            qcForm.consignorAskingPrice,
+                            qcForm.commissionRatePercent
+                          );
+                          return (
+                            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-terracotta-200/70 text-xs">
+                              <div className="p-2.5 bg-white rounded-xl border border-linen-200">
+                                <span className="text-[9px] font-mono text-espresso-400 block uppercase">Harga Jual Umum</span>
+                                <span className="font-serif text-sm font-semibold text-espresso-950">{formatIDR(split.targetLivePrice)}</span>
+                              </div>
+                              <div className="p-2.5 bg-white rounded-xl border border-terracotta-200">
+                                <span className="text-[9px] font-mono text-terracotta-600 block uppercase font-medium">Fee PT ({qcForm.commissionRatePercent}%)</span>
+                                <span className="font-serif text-sm font-semibold text-terracotta-700">+{formatIDR(split.commissionFee)}</span>
+                              </div>
+                              <div className="p-2.5 bg-white rounded-xl border border-emerald-200">
+                                <span className="text-[9px] font-mono text-emerald-700 block uppercase font-medium">Hak Bersih Pemilik</span>
+                                <span className="font-serif text-sm font-bold text-emerald-800">{formatIDR(split.floorPrice)}</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="p-5 rounded-xl bg-rose-50/50 border border-rose-200 space-y-4">
@@ -457,10 +619,29 @@ export default function StudioOperatorPage() {
                   </div>
 
                   <div className="pt-2 text-[10px] font-mono text-espresso-600 flex justify-between border-t border-linen-200">
-                    <span>Floor: {formatIDR(qcForm.floorPrice)}</span>
-                    <span className="text-espresso-900 font-bold">
-                      Live: {formatIDR(qcForm.targetLivePrice)}
-                    </span>
+                    {qcForm.pricingModel === 'commission_split' ? (
+                      (() => {
+                        const split = COMMISSION_CONFIG.calculateCommissionSplit(
+                          qcForm.consignorAskingPrice,
+                          qcForm.commissionRatePercent
+                        );
+                        return (
+                          <>
+                            <span>Hak Bersih: {formatIDR(split.floorPrice)}</span>
+                            <span className="text-espresso-900 font-bold">
+                              Jual: {formatIDR(split.targetLivePrice)}
+                            </span>
+                          </>
+                        );
+                      })()
+                    ) : (
+                      <>
+                        <span>Floor: {formatIDR(qcForm.floorPrice)}</span>
+                        <span className="text-espresso-900 font-bold">
+                          Live: {formatIDR(qcForm.targetLivePrice)}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -589,7 +770,13 @@ export default function StudioOperatorPage() {
                           {item.title} ({item.brand})
                         </td>
                         <td className="py-3.5 font-mono text-[11px]">
-                          {item.category_tier.replace('tier_', 'Tier ')}
+                          {item.pricing_model === 'commission_split' ? (
+                            <span className="px-2 py-0.5 rounded-full bg-terracotta-100 text-terracotta-800 font-semibold text-[10px]">
+                              Komisi {item.commission_rate_percent || 15}%
+                            </span>
+                          ) : (
+                            item.category_tier.replace('tier_', 'Tier ')
+                          )}
                         </td>
                         <td className="py-3.5 font-mono">{formatIDR(item.floor_price)}</td>
                         <td className="py-3.5 font-mono">{formatIDR(item.target_live_price)}</td>

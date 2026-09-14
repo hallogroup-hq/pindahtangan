@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createTestStore } from '../helpers/test-store';
 import { PindahTanganStore } from '@/lib/store';
-import { BUSINESS_RULES, TIER_CONFIG } from '@/lib/constants';
+import { BUSINESS_RULES, TIER_CONFIG, COMMISSION_CONFIG } from '@/lib/constants';
 
 describe('REG-QC: QC 3-Station & Steaming Flow Tests', () => {
   let store: PindahTanganStore;
@@ -131,5 +131,71 @@ describe('REG-QC: QC 3-Station & Steaming Flow Tests', () => {
 
     expect(TIER_CONFIG.tier_c.minFloor).toBe(5000);
     expect(TIER_CONFIG.tier_c.maxFloor).toBe(15000);
+  });
+
+  it('REG-QC-07: Commission split calculation handles 10% and 15% platform cuts while keeping consignor asking price as general selling price', () => {
+    // 15% cut on Rp 100,000 asking price
+    const split15 = COMMISSION_CONFIG.calculateCommissionSplit(100000, 15);
+    expect(split15.targetLivePrice).toBe(100000); // Selling price to public remains the consignor's asking price
+    expect(split15.commissionFee).toBe(15000);
+    expect(split15.floorPrice).toBe(85000);
+    expect(split15.consignorNetAfterSteam).toBe(82500); // 85000 - 2500
+
+    // 10% cut on Rp 80,000 asking price
+    const split10 = COMMISSION_CONFIG.calculateCommissionSplit(80000, 10);
+    expect(split10.targetLivePrice).toBe(80000);
+    expect(split10.commissionFee).toBe(8000);
+    expect(split10.floorPrice).toBe(72000);
+    expect(split10.consignorNetAfterSteam).toBe(69500); // 72000 - 2500
+  });
+
+  it('REG-QC-08: qcPassItem & inspectQCItem store commission_split properties correctly', () => {
+    // Test qcPassItem with commission_split
+    const passedItem = store.qcPassItem({
+      batchId: 'batch-001',
+      consignorId: 'user-ratna-01',
+      title: 'Levis 501 Original Denim Jeans',
+      brand: 'Levis',
+      size: '32',
+      categoryTier: 'tier_a',
+      pricingModel: 'commission_split',
+      itemTypeCategory: 'celana',
+      consignorAskingPrice: 200000,
+      commissionRatePercent: 15,
+      floorPrice: 170000,
+      targetLivePrice: 200000,
+    });
+
+    expect(passedItem.pricing_model).toBe('commission_split');
+    expect(passedItem.consignor_asking_price).toBe(200000);
+    expect(passedItem.commission_rate_percent).toBe(15);
+    expect(passedItem.item_type_category).toBe('celana');
+    expect(passedItem.target_live_price).toBe(200000);
+    expect(passedItem.floor_price).toBe(170000);
+
+    // Test inspectQCItem with commission_split
+    const inspectedItem = store.inspectQCItem({
+      batchId: 'batch-001',
+      consignorId: 'user-ratna-01',
+      title: 'Coach Leather Handbag Brown',
+      brand: 'Coach',
+      size: 'All Size',
+      categoryTier: 'tier_a',
+      pricingModel: 'commission_split',
+      itemTypeCategory: 'tas',
+      consignorAskingPrice: 350000,
+      commissionRatePercent: 10,
+      floorPrice: 315000,
+      targetLivePrice: 350000,
+      passedQC: true,
+      isSteamed: true,
+    });
+
+    expect(inspectedItem.pricing_model).toBe('commission_split');
+    expect(inspectedItem.consignor_asking_price).toBe(350000);
+    expect(inspectedItem.commission_rate_percent).toBe(10);
+    expect(inspectedItem.item_type_category).toBe('tas');
+    expect(inspectedItem.floor_price).toBe(315000);
+    expect(inspectedItem.target_live_price).toBe(350000);
   });
 });

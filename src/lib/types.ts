@@ -92,6 +92,8 @@ export interface IntakeBatch {
   consignor?: Profile;
 }
 
+export type PricingModel = 'tier_flat' | 'commission_split';
+
 // 3. Clothes Item
 export interface ClothesItem {
   id: string;
@@ -123,6 +125,10 @@ export interface ClothesItem {
   steam_completed_at?: string;
   consignment_start_date: string;
   aging_expiry_date: string;
+  pricing_model?: PricingModel; // 'tier_flat' (kaos/tops) atau 'commission_split' (celana/tas/rok/jaket)
+  consignor_asking_price?: number; // Harga jual yang ditentukan pemilik barang
+  commission_rate_percent?: number; // Persentase komisi PindahTangan (10% - 15%)
+  item_type_category?: string; // 'kaos' | 'celana' | 'rok' | 'jaket' | 'tas' | 'sepatu' | 'lainnya'
   created_at: string;
   consignor?: Profile;
 }
