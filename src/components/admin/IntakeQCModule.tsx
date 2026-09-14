@@ -561,16 +561,19 @@ export default function IntakeQCModule() {
                             : 'border-linen-300 bg-linen-100/40 hover:bg-linen-100'
                         }`}
                       >
-                        <span className="font-serif text-xs font-medium text-espresso-900 block">
-                          {cfg.label.split('•')[0]}
+                        <span className="font-serif text-xs font-semibold text-espresso-900 block truncate">
+                          {cfg.label}
                         </span>
-                        <span className="text-[10px] font-mono text-espresso-500 block">
-                          {cfg.floorPriceRange}
+                        <span className="text-[10px] font-mono text-terracotta-700 font-medium block">
+                          Floor: {cfg.floorPriceRange}
                         </span>
                       </button>
                     );
                   })}
                 </div>
+                <p className="text-[10px] text-espresso-500 mt-1.5 font-sans">
+                  *Acuan floor berlaku untuk kaos, croptop, oversized, dll. Untuk celana, kemeja, sepatu, tas, dll. nilai floor dapat disesuaikan manual pada isian di bawah.
+                </p>
               </div>
 
               {/* Pricing Form */}

@@ -17,36 +17,42 @@ export const BUSINESS_RULES = {
 
 export const TIER_CONFIG = {
   tier_a: {
-    label: 'Tier A • Branded & Pesta',
-    description: 'Brand mall (Zara, Mango, Uniqlo), Gamis kondangan, Gaun pesta, Outer knit',
-    floorPriceRange: 'Rp 50.000 – Rp 120.000',
-    minFloor: 50000,
-    maxFloor: 120000,
-    defaultTargetLive: 85000,
-    liveSchedule: 'Weekend / Malam (20.00–22.00)',
-    badgeColor: 'bg-linen-100 text-espresso-800 border-linen-300',
-  },
-  tier_b: {
-    label: 'Tier B • Casual & Kerja',
-    description: 'Kemeja kerja, blouse katun, kulot linen, tunik harian',
+    label: 'Tier A • Very Good Quality',
+    qualityLabel: 'Very Good Quality',
+    description: 'Kondisi sangat prima (Very Good Quality), tanpa noda/cacat, warna pekat. Khusus kaos, crop top, oversized: hak bersih Rp 25.000 – Rp 45.000 (celana, kemeja, tas, sepatu fleksibel dinilai kurator)',
     floorPriceRange: 'Rp 25.000 – Rp 45.000',
     minFloor: 25000,
     maxFloor: 45000,
     defaultTargetLive: 49000,
+    liveSchedule: 'Weekend / Malam (20.00–22.00)',
+    badgeColor: 'bg-linen-100 text-espresso-800 border-linen-300',
+  },
+  tier_b: {
+    label: 'Tier B • Good Quality',
+    qualityLabel: 'Good Quality tapi tidak sebagus A',
+    description: 'Kondisi bagus layak pakai (Good Quality), warna dan serat kain baik. Khusus kaos, crop top, oversized: hak bersih Rp 15.000 – Rp 35.000',
+    floorPriceRange: 'Rp 15.000 – Rp 35.000',
+    minFloor: 15000,
+    maxFloor: 35000,
+    defaultTargetLive: 35000,
     liveSchedule: 'Harian Sore (16.00–18.00)',
     badgeColor: 'bg-terracotta-50 text-terracotta-800 border-terracotta-200',
   },
   tier_c: {
-    label: 'Tier C • Mass Market',
-    description: 'Kaos basic, cardigan tipis, celana rumahan, obral ceban',
-    floorPriceRange: 'Rp 10.000 – Rp 20.000',
-    minFloor: 10000,
-    maxFloor: 20000,
-    defaultTargetLive: 25000,
+    label: 'Tier C • Minor Dikit',
+    qualityLabel: 'Ada minor dikit',
+    description: 'Ada cacat minor ringan (noda samar/kancing lepas/wash wear). Khusus kaos, crop top, oversized: hak bersih Rp 5.000 – Rp 15.000',
+    floorPriceRange: 'Rp 5.000 – Rp 15.000',
+    minFloor: 5000,
+    maxFloor: 15000,
+    defaultTargetLive: 15000,
     liveSchedule: 'Flash Sale Siang (14.00–16.00)',
     badgeColor: 'bg-sage-50 text-sage-800 border-sage-500/20',
   },
 };
+
+export const SPECIAL_CATEGORY_NOTE =
+  'Rentang harga floor di atas berlaku untuk kaos, crop top, oversized tee, dll. Untuk celana, kemeja, sepatu, tas, dll. nilai floor dapat disepakati tersendiri bersama kurator studio saat intake.';
 
 export const SUKABUMI_DISTRICTS = [
   'Kecamatan Cikole',

@@ -286,7 +286,7 @@ function CatalogContent() {
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
               }`}
             >
-              ✨ Tier A • Branded & Pesta
+              ✨ Tier A • Very Good Quality
             </button>
             <button
               onClick={() => setSelectedTier('tier_b')}
@@ -296,7 +296,7 @@ function CatalogContent() {
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
               }`}
             >
-              💼 Tier B • Casual & Kerja
+              👍 Tier B • Good Quality
             </button>
             <button
               onClick={() => setSelectedTier('tier_c')}
@@ -306,7 +306,7 @@ function CatalogContent() {
                   : 'bg-white border border-linen-300 text-espresso-700 hover:bg-linen-100'
               }`}
             >
-              ⚡ Tier C • Mass Market
+              🏷️ Tier C • Minor Dikit
             </button>
           </div>
         </div>
@@ -528,7 +528,7 @@ function CatalogContent() {
                     </span>
                     <span className="text-espresso-300">•</span>
                     <span className="text-xs font-mono text-espresso-500 uppercase">
-                      {activeModalItem.category_tier.replace('_', ' ')}
+                      {TIER_CONFIG[activeModalItem.category_tier]?.label || activeModalItem.category_tier.replace('_', ' ')}
                     </span>
                   </div>
                   <h2 className="font-serif text-xl sm:text-2xl font-normal text-espresso-900 leading-tight">

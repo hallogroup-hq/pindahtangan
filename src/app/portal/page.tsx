@@ -440,10 +440,10 @@ export default function ConsignorPortalPage() {
                           </h3>
                         </div>
 
-                        <div className="flex items-center gap-3 text-xs text-espresso-500 font-sans">
-                          <span>Size {item.size || 'All Size'}</span>
+                        <div className="flex items-center gap-2 text-xs text-espresso-600 font-sans flex-wrap">
+                          <span className="font-medium">Size {item.size || 'All Size'}</span>
                           {item.chest_width_cm && <span>• LD {item.chest_width_cm} cm</span>}
-                          <span>• {tierMeta?.label.split(' • ')[0]}</span>
+                          <span className="text-terracotta-700 font-medium">• {tierMeta?.qualityLabel || tierMeta?.label.split(' • ')[0]}</span>
                         </div>
 
                         {/* Price Breakdown */}

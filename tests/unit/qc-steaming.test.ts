@@ -122,14 +122,14 @@ describe('REG-QC: QC 3-Station & Steaming Flow Tests', () => {
     expect(item?.reject_resolution).toBe('reclaim');
   });
 
-  it('REG-QC-06: Tier configuration constants adhere to PRD v1.0 specifications', () => {
-    expect(TIER_CONFIG.tier_a.minFloor).toBe(50000);
-    expect(TIER_CONFIG.tier_a.maxFloor).toBe(120000);
+  it('REG-QC-06: Tier configuration constants adhere to consignor pricing specifications', () => {
+    expect(TIER_CONFIG.tier_a.minFloor).toBe(25000);
+    expect(TIER_CONFIG.tier_a.maxFloor).toBe(45000);
 
-    expect(TIER_CONFIG.tier_b.minFloor).toBe(25000);
-    expect(TIER_CONFIG.tier_b.maxFloor).toBe(45000);
+    expect(TIER_CONFIG.tier_b.minFloor).toBe(15000);
+    expect(TIER_CONFIG.tier_b.maxFloor).toBe(35000);
 
-    expect(TIER_CONFIG.tier_c.minFloor).toBe(10000);
-    expect(TIER_CONFIG.tier_c.maxFloor).toBe(20000);
+    expect(TIER_CONFIG.tier_c.minFloor).toBe(5000);
+    expect(TIER_CONFIG.tier_c.maxFloor).toBe(15000);
   });
 });

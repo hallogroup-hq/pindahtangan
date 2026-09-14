@@ -10,9 +10,9 @@ export default function ValueEstimator() {
   const [pieces, setPieces] = useState<number>(25);
 
   const isFreePickup = pieces >= BUSINESS_RULES.FREE_PICKUP_THRESHOLD;
-  const estimatedMinNet = Math.round(pieces * 32500);
-  const estimatedMaxNet = Math.round(pieces * 52500);
-  const estimatedAverageNet = Math.round(pieces * 42500);
+  const estimatedMinNet = Math.round(pieces * 15000);
+  const estimatedMaxNet = Math.round(pieces * 35000);
+  const estimatedAverageNet = Math.round(pieces * 25000);
 
   return (
     <section id="estimator" className="py-24 bg-linen-100/50 border-b border-linen-200">
@@ -74,7 +74,7 @@ export default function ValueEstimator() {
                   {formatIDR(estimatedMinNet)} — {formatIDR(estimatedMaxNet)}
                 </div>
                 <p className="text-[11px] text-espresso-500 font-sans">
-                  *Rata-rata estimasi: <strong>{formatIDR(estimatedAverageNet)}</strong> (sudah dipotong biaya sterilisasi uap Rp 2.500/pcs).
+                  *Berdasarkan rentang hak bersih pemilik: Tier A (Rp 25rb–45rb), Tier B (Rp 15rb–35rb), Tier C (Rp 5rb–15rb). Khusus celana/kemeja/tas/sepatu dinilai fleksibel bersama kurator.
                 </p>
               </div>
 

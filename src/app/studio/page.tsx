@@ -320,9 +320,9 @@ export default function StudioOperatorPage() {
                           }
                           className="w-full px-3 py-2.5 rounded-xl border border-linen-200 bg-linen-50/40 text-espresso-900 text-xs focus:outline-none focus:border-espresso-900"
                         >
-                          <option value="tier_a">Tier A (Branded)</option>
-                          <option value="tier_b">Tier B (Casual)</option>
-                          <option value="tier_c">Tier C (Mass)</option>
+                          <option value="tier_a">Tier A (Very Good Quality • 25k–45k)</option>
+                          <option value="tier_b">Tier B (Good Quality • 15k–35k)</option>
+                          <option value="tier_c">Tier C (Minor Dikit • 5k–15k)</option>
                         </select>
                       </div>
                     </div>
@@ -363,6 +363,9 @@ export default function StudioOperatorPage() {
                         />
                       </div>
                     </div>
+                    <p className="text-[10px] text-espresso-500 font-sans">
+                      *Rentang floor di atas adalah acuan kaos, crop top, oversized, dll. Untuk celana, kemeja, sepatu, tas dapat disesuaikan nilai floor-nya.
+                    </p>
                   </>
                 ) : (
                   <div className="p-5 rounded-xl bg-rose-50/50 border border-rose-200 space-y-4">
