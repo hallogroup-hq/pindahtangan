@@ -6,6 +6,7 @@ import {
   formatLiveSoldCongratsMessage,
   formatFridayPayoutSlipMessage,
   formatOrderShippedMessage,
+  formatCatalogOrderMessage,
   createDirectWhatsAppLink,
 } from '@/lib/whatsapp';
 import { formatIDR } from '@/lib/utils';
@@ -107,6 +108,27 @@ describe('REG-WA: WhatsApp Automation & Multi-Event Dispatch Engine', () => {
       expect(msg).toContain('J&T Express');
       expect(msg).toContain('JT9182740192');
       expect(msg).toContain('2 potong (steril uap >100°C)');
+    });
+
+    it('REG-WA-05B: formatCatalogOrderMessage formats title, brand, size, LD, SKU and direct deep link', () => {
+      const msg = formatCatalogOrderMessage({
+        itemTitle: 'Zara Floral Blouse Katun Premium',
+        brand: 'Zara',
+        size: 'M',
+        chestWidthCm: 96,
+        hangtagNumber: 1,
+        sku: 'PT-SM-001-001',
+        price: 95000,
+        productUrl: 'https://pindahtangan-zeta.vercel.app/katalog?item=item-01',
+      });
+
+      expect(msg).toContain('*Zara Floral Blouse Katun Premium*');
+      expect(msg).toContain('*Zara*');
+      expect(msg).toContain('*Size M* (LD: *96 cm*)');
+      expect(msg).toContain('*#1* (SKU: *PT-SM-001-001*)');
+      expect(msg).toContain(formatIDR(95000));
+      expect(msg).toContain('https://pindahtangan-zeta.vercel.app/katalog?item=item-01');
+      expect(msg).toContain('Apakah pakaian ini masih tersedia dan bisa dikirim ke alamat saya?');
     });
   });
 

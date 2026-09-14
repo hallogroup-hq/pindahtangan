@@ -38,6 +38,7 @@ export default function Navbar() {
 
   const navLinks: NavLink[] = [
     { href: '/', label: 'Beranda' },
+    { href: '/katalog', label: 'Katalog Baju' },
     { href: '/booking', label: 'Jemput Lemari' },
     { href: '/portal', label: 'Lemari Saya' },
     { href: '/studio', label: 'Studio QC' },

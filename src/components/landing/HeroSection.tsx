@@ -33,20 +33,28 @@ export default function HeroSection() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <Link
                 href="/booking"
-                className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-warm text-center"
+                className="bg-espresso-900 hover:bg-terracotta-600 text-linen-50 px-7 py-3.5 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-warm text-center"
               >
-                <span>Jemput Lemari (Gratis ≥20 pcs)</span>
+                <span>Jemput Lemari</span>
+                <ArrowUpRight className="w-4 h-4 opacity-80" />
+              </Link>
+
+              <Link
+                href="/katalog"
+                className="bg-terracotta-600 hover:bg-terracotta-700 text-linen-50 px-7 py-3.5 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm text-center"
+              >
+                <span>Lihat Katalog Baju</span>
                 <ArrowUpRight className="w-4 h-4 opacity-80" />
               </Link>
 
               <Link
                 href="#estimator"
-                className="border border-espresso-900/20 hover:border-espresso-900 text-espresso-900 px-8 py-4 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 text-center"
+                className="border border-espresso-900/20 hover:border-espresso-900 text-espresso-900 px-6 py-3.5 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200 text-center"
               >
-                Hitung Estimasi Cuan
+                Estimasi Cuan
               </Link>
             </div>
 

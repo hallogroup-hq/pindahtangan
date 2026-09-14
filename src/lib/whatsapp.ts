@@ -166,6 +166,28 @@ Lacak paket Anda melalui aplikasi ekspedisi atau hubungi kurir saat paket tiba.
 Terima kasih sudah berbelanja fesyen kurasi di PindahTangan! ✨`;
 }
 
+export function formatCatalogOrderMessage(params: {
+  itemTitle: string;
+  brand?: string;
+  size?: string;
+  chestWidthCm?: number;
+  hangtagNumber: number;
+  sku: string;
+  price: number;
+  productUrl: string;
+}): string {
+  return `Halo Admin PindahTangan Sukabumi, saya tertarik ingin memesan pakaian ini dari katalog website:
+
+• Judul: *${params.itemTitle}*
+• Brand: *${params.brand || 'No Brand'}*
+• Ukuran: *Size ${params.size || '-'}* (LD: *${params.chestWidthCm || '-'} cm*)
+• No. Hangtag: *#${params.hangtagNumber}* (SKU: *${params.sku}*)
+• Harga: *${formatIDR(params.price)}*
+• Link Produk: ${params.productUrl}
+
+Apakah pakaian ini masih tersedia dan bisa dikirim ke alamat saya? Terima kasih!`;
+}
+
 // -----------------------------------------------------------------
 // 2. DISPATCH ENGINE (Direct URL or API Gateway)
 // -----------------------------------------------------------------

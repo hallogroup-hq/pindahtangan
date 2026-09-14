@@ -44,6 +44,11 @@ export default function Footer() {
             </span>
             <ul className="text-xs text-stone-400 space-y-2.5">
               <li>
+                <Link href="/katalog" className="text-terracotta-300 hover:text-white font-medium transition flex items-center gap-1.5">
+                  <span>👗 Katalog Baju Siap Kirim</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/booking" className="hover:text-white transition">
                   Jadwal Penjemputan Lemari
                 </Link>
